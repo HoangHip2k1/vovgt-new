@@ -357,8 +357,8 @@ private fun VovArchiveBrowserScreen(report: (String) -> Unit) {
                                     putExtra(VovPublicDownloadService.EXTRA_TITLE, pageTitle)
                                     putExtra(VovPublicDownloadService.EXTRA_PAGE, pageUrl)
                                 }
-                                androidx.core.content.ContextCompat.startForegroundService(context, intent)
-                                progress = "Đã bắt đầu tải nền. Bạn có thể chuyển sang tab khác; tiến trình hiển thị trên thông báo."
+                                context.startService(intent)
+                                progress = "Đã xếp hàng tải nền. Bạn có thể chuyển sang tab khác; tiến trình hiển thị trên thông báo."
                                 report("Đã bắt đầu tải nội dung VOV ở chế độ nền.")
                             } catch (e: Exception) {
                                 progress = e.message ?: "Không thể bắt đầu tải nền."
