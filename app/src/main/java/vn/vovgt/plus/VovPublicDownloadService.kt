@@ -6,10 +6,9 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.content.pm.ServiceInfo
 import android.os.Build
-import android.os.IBinder
 import android.os.Handler
+import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -22,13 +21,15 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 /**
- * Foreground download service used only by the public VOV archive tab.
- * It is independent from VOV Media downloads and authentication.
+ * Sequential foreground worker for public VOV archive downloads.
+ * Queue metadata and journal entries survive process restarts.
  */
 class VovPublicDownloadService : Service() {
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val mainHandler = Handler(Looper.getMainLooper())
     private var downloadJob: kotlinx.coroutines.Job? = null
+    private var currentTaskId: String? = null
+    private var lastStartId: Int = 0
     private val notificationManager by lazy {
         getSystemService(NOTIFICATION_SERVICE) as NotificationManager
     }
@@ -39,93 +40,218 @@ class VovPublicDownloadService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        lastStartId = startId
         when (intent?.action) {
             ACTION_PAUSE -> {
-                VovPublicDownloadControl.pause()
-                val title = VovPublicDownloadState.read(applicationContext).title
-                VovPublicDownloadState.paused(applicationContext, title)
-                updateNotification("Đã tạm dừng: $title", ongoing = true, paused = true)
+                val task = DownloadCenterStore.current(applicationContext)
+                if (task != null) {
+                    VovPublicDownloadControl.pause()
+                    DownloadCenterStore.update(applicationContext, task.id, status = "paused", detail = "Đã tạm dừng")
+                    VovPublicDownloadState.paused(applicationContext, task.title)
+                    DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "paused", "Người dùng tạm dừng tải")
+                    updateNotification("Đã tạm dừng: ${task.title}", ongoing = true, paused = true)
+                }
                 return START_NOT_STICKY
             }
             ACTION_RESUME -> {
                 VovPublicDownloadControl.resume()
-                val title = VovPublicDownloadState.read(applicationContext).title
-                VovPublicDownloadState.resumed(applicationContext, title)
-                updateNotification("Đang tiếp tục: $title", ongoing = true)
+                DownloadCenterStore.current(applicationContext)?.let { task ->
+                    DownloadCenterStore.update(applicationContext, task.id, status = "running", detail = "Đang tiếp tục tải…")
+                    VovPublicDownloadState.resumed(applicationContext, task.title)
+                    DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "resumed", "Tiếp tục tải")
+                }
+                if (downloadJob?.isActive != true) startNext(startId)
+                else updateNotification("Đang tiếp tục tải…", ongoing = true)
+                return START_NOT_STICKY
+            }
+            ACTION_CANCEL -> {
+                val id = intent.getStringExtra(EXTRA_TASK_ID).orEmpty()
+                cancelTask(id)
+                return START_NOT_STICKY
+            }
+            ACTION_RETRY -> {
+                val id = intent.getStringExtra(EXTRA_TASK_ID).orEmpty()
+                if (id.isNotBlank()) DownloadCenterStore.retry(applicationContext, id)
+                if (downloadJob?.isActive != true) startNext(startId)
+                return START_NOT_STICKY
+            }
+            ACTION_REMOVE -> {
+                val id = intent.getStringExtra(EXTRA_TASK_ID).orEmpty()
+                if (id.isNotBlank()) DownloadCenterStore.removeTask(applicationContext, id)
+                return START_NOT_STICKY
+            }
+            ACTION_ENQUEUE, ACTION_START -> {
+                val mediaUrl = intent.getStringExtra(EXTRA_URL).orEmpty()
+                val title = intent.getStringExtra(EXTRA_TITLE).orEmpty().ifBlank { "Chương trình VOV" }
+                val pageUrl = intent.getStringExtra(EXTRA_PAGE).orEmpty().ifBlank { "https://vov.gov.vn/nghe-va-xem-lai" }
+                if (mediaUrl.isNotBlank()) {
+                    val task = DownloadCenterStore.enqueue(applicationContext, mediaUrl, title, pageUrl)
+                    if (downloadJob?.isActive != true) startNext(startId)
+                    else updateNotification("Đã xếp hàng: ${task.title}", ongoing = true)
+                }
+                return START_NOT_STICKY
+            }
+            ACTION_PROCESS_QUEUE -> {
+                if (downloadJob?.isActive != true) startNext(startId)
                 return START_NOT_STICKY
             }
         }
-        if (intent?.action != ACTION_START) {
-            stopSelf(startId)
-            return START_NOT_STICKY
-        }
+        stopSelf(startId)
+        return START_NOT_STICKY
+    }
 
-        if (downloadJob?.isActive == true) {
-            updateNotification("Đang có một lượt tải VOV khác chạy.", ongoing = true)
-            return START_NOT_STICKY
+    private fun startNext(startId: Int) {
+        if (downloadJob?.isActive == true) return
+        val task = DownloadCenterStore.nextQueued(applicationContext)
+        if (task == null) {
+            mainHandler.post {
+                stopForeground(STOP_FOREGROUND_REMOVE)
+                stopSelf(startId)
+            }
+            return
         }
-
-        val mediaUrl = intent.getStringExtra(EXTRA_URL).orEmpty()
-        val title = intent.getStringExtra(EXTRA_TITLE).orEmpty().ifBlank { "Chương trình VOV" }
-        val pageUrl = intent.getStringExtra(EXTRA_PAGE).orEmpty().ifBlank {
-            "https://vov.gov.vn/nghe-va-xem-lai"
-        }
-        if (mediaUrl.isBlank()) {
-            stopSelf(startId)
-            return START_NOT_STICKY
-        }
-
+        currentTaskId = task.id
         try {
-            startAsForeground("Đang chuẩn bị tải: $title")
+            startAsForeground("Đang chuẩn bị tải: ${task.title}")
         } catch (error: Exception) {
-            // A foreground-service startup exception must not crash the whole app process.
             Log.e(TAG, "Cannot promote VOV download service to foreground", error)
-            stopSelf(startId)
-            return START_NOT_STICKY
+            DownloadCenterStore.update(applicationContext, task.id, status = "failed", detail = "Không thể khởi chạy dịch vụ tải: ${error.message}")
+            DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "failed", error.message ?: "Không thể khởi chạy dịch vụ tải")
+            currentTaskId = null
+            startNext(startId)
+            return
         }
 
         VovPublicDownloadControl.resume()
-        VovPublicDownloadState.started(applicationContext, title)
+        VovPublicDownloadState.started(applicationContext, task.title)
         downloadJob = serviceScope.launch {
             try {
                 val result = VovPublicMediaDownloader.download(
                     context = applicationContext,
-                    mediaUrl = mediaUrl,
-                    title = title,
-                    pageUrl = pageUrl,
+                    mediaUrl = task.url,
+                    title = task.title,
+                    pageUrl = task.pageUrl,
                     onProgress = { message ->
-                        VovPublicDownloadState.progress(applicationContext, title, message)
+                        DownloadCenterStore.update(
+                            applicationContext,
+                            task.id,
+                            detail = message,
+                            progress = progressFrom(message)
+                        )
+                        VovPublicDownloadState.progress(applicationContext, task.title, message)
                         updateNotification(message, ongoing = true)
                     }
                 )
                 val doneMessage = "Đã tải xong: ${result.displayName} • ${result.location}"
-                VovPublicDownloadState.completed(applicationContext, title, doneMessage)
+                DownloadCenterStore.update(
+                    applicationContext,
+                    task.id,
+                    status = "completed",
+                    detail = doneMessage,
+                    progress = 1f,
+                    location = result.location,
+                    mediaUri = result.mediaUri
+                )
+                DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "completed", doneMessage)
+                VovPublicDownloadState.completed(applicationContext, task.title, doneMessage)
                 updateNotification(doneMessage, ongoing = false, completed = true)
-                notificationManager.cancel(NOTIFICATION_ID)
             } catch (cancelled: CancellationException) {
+                val latest = DownloadCenterStore.tasks(applicationContext).firstOrNull { it.id == task.id }
+                if (latest?.status == "running" || latest?.status == "paused") {
+                    DownloadCenterStore.update(applicationContext, task.id, status = "queued", detail = "Tác vụ bị gián đoạn; sẽ thử lại khi dịch vụ hoạt động")
+                }
                 throw cancelled
             } catch (error: Exception) {
                 val failure = "Tải VOV thất bại: ${error.message ?: "Lỗi không xác định"}"
-                VovPublicDownloadState.failed(applicationContext, title, failure)
+                DownloadCenterStore.update(applicationContext, task.id, status = "failed", detail = failure, progress = -1f)
+                DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "failed", failure)
+                VovPublicDownloadState.failed(applicationContext, task.title, failure)
                 updateNotification(failure, ongoing = false, failed = true)
-                notificationManager.cancel(NOTIFICATION_ID)
             } finally {
-                // Service lifecycle operations are dispatched on Android's main thread.
                 mainHandler.post {
-                    stopForeground(STOP_FOREGROUND_REMOVE)
-                    stopSelf(startId)
+                    downloadJob = null
+                    currentTaskId = null
+                    val next = DownloadCenterStore.nextQueued(applicationContext)
+                    if (next != null) {
+                        // The next task is already marked running; start it without a second queue lookup.
+                        runTask(next, lastStartId)
+                    } else {
+                        stopForeground(STOP_FOREGROUND_REMOVE)
+                        stopSelf(lastStartId)
+                    }
                 }
             }
         }
-        return START_NOT_STICKY
+    }
+
+    private fun runTask(task: DownloadCenterStore.PublicTask, startId: Int) {
+        currentTaskId = task.id
+        VovPublicDownloadControl.resume()
+        VovPublicDownloadState.started(applicationContext, task.title)
+        downloadJob = serviceScope.launch {
+            try {
+                val result = VovPublicMediaDownloader.download(
+                    applicationContext, task.url, task.title, task.pageUrl
+                ) { message ->
+                    DownloadCenterStore.update(applicationContext, task.id, detail = message, progress = progressFrom(message))
+                    VovPublicDownloadState.progress(applicationContext, task.title, message)
+                    updateNotification(message, ongoing = true)
+                }
+                val detail = "Đã tải xong: ${result.displayName} • ${result.location}"
+                DownloadCenterStore.update(applicationContext, task.id, status = "completed", detail = detail, progress = 1f, location = result.location, mediaUri = result.mediaUri)
+                DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "completed", detail)
+                VovPublicDownloadState.completed(applicationContext, task.title, detail)
+                updateNotification(detail, ongoing = false, completed = true)
+            } catch (cancelled: CancellationException) {
+                val latest = DownloadCenterStore.tasks(applicationContext).firstOrNull { it.id == task.id }
+                if (latest?.status == "running" || latest?.status == "paused") {
+                    DownloadCenterStore.update(applicationContext, task.id, status = "queued", detail = "Tác vụ bị gián đoạn; sẽ thử lại khi dịch vụ hoạt động")
+                }
+                throw cancelled
+            } catch (error: Exception) {
+                val detail = "Tải VOV thất bại: ${error.message ?: "Lỗi không xác định"}"
+                DownloadCenterStore.update(applicationContext, task.id, status = "failed", detail = detail, progress = -1f)
+                DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "failed", detail)
+                VovPublicDownloadState.failed(applicationContext, task.title, detail)
+                updateNotification(detail, ongoing = false, failed = true)
+            } finally {
+                mainHandler.post {
+                    downloadJob = null
+                    currentTaskId = null
+                    val next = DownloadCenterStore.nextQueued(applicationContext)
+                    if (next != null) runTask(next, lastStartId)
+                    else {
+                        stopForeground(STOP_FOREGROUND_REMOVE)
+                        stopSelf(lastStartId)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun cancelTask(id: String) {
+        if (id.isBlank()) return
+        val current = DownloadCenterStore.current(applicationContext)
+        if (current?.id == id) {
+            DownloadCenterStore.cancel(applicationContext, id)
+            VovPublicDownloadControl.resume()
+            VovPublicMediaDownloader.cancelCurrent()
+            downloadJob?.cancel()
+            VovPublicDownloadState.failed(applicationContext, current.title, "Đã hủy tải")
+        } else {
+            DownloadCenterStore.cancel(applicationContext, id)
+        }
+    }
+
+    private fun progressFrom(message: String): Float {
+        val match = Regex("""(\d+)\s*/\s*(\d+)""").find(message) ?: return -1f
+        val current = match.groupValues[1].toFloatOrNull() ?: return -1f
+        val total = match.groupValues[2].toFloatOrNull() ?: return -1f
+        return if (total > 0f) (current / total).coerceIn(0f, 0.99f) else -1f
     }
 
     private fun startAsForeground(message: String) {
-        val notification = buildNotification(message, ongoing = true)
-        // The service type is declared in AndroidManifest.xml. Using the
-        // two-argument overload lets Android apply that manifest type and avoids
-        // a runtime type mismatch while still creating a foreground service.
-        startForeground(NOTIFICATION_ID, notification)
+        startForeground(NOTIFICATION_ID, buildNotification(message, ongoing = true))
     }
 
     private fun updateNotification(
@@ -135,8 +261,7 @@ class VovPublicDownloadService : Service() {
         failed: Boolean = false,
         paused: Boolean = false
     ) {
-        val notification = buildNotification(message, ongoing, completed, failed, paused)
-        notificationManager.notify(NOTIFICATION_ID, notification)
+        notificationManager.notify(NOTIFICATION_ID, buildNotification(message, ongoing, completed, failed, paused))
     }
 
     private fun buildNotification(
@@ -146,31 +271,42 @@ class VovPublicDownloadService : Service() {
         failed: Boolean = false,
         paused: Boolean = false
     ): Notification {
-        val openApp = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            0,
-            openApp,
+        val openApp = PendingIntent.getActivity(
+            this, 0, Intent(this, MainActivity::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val pauseIntent = PendingIntent.getService(
+            this, 1, Intent(this, VovPublicDownloadService::class.java).setAction(ACTION_PAUSE),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val resumeIntent = PendingIntent.getService(
+            this, 2, Intent(this, VovPublicDownloadService::class.java).setAction(ACTION_RESUME),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val cancelIntent = PendingIntent.getService(
+            this, 3,
+            Intent(this, VovPublicDownloadService::class.java).setAction(ACTION_CANCEL)
+                .putExtra(EXTRA_TASK_ID, currentTaskId),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val title = when {
             completed -> "VOV • Tải hoàn tất"
             failed -> "VOV • Tải thất bại"
+            paused -> "VOV • Đã tạm dừng"
             else -> "VOV • Đang tải nội dung"
         }
-        val pauseIntent = PendingIntent.getService(this, 1, Intent(this, VovPublicDownloadService::class.java).setAction(ACTION_PAUSE), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val resumeIntent = PendingIntent.getService(this, 2, Intent(this, VovPublicDownloadService::class.java).setAction(ACTION_RESUME), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_radio)
             .setContentTitle(title)
             .setContentText(message.take(180))
             .setStyle(NotificationCompat.BigTextStyle().bigText(message))
-            .setContentIntent(pendingIntent)
-            .setOngoing(false)
+            .setContentIntent(openApp)
+            .setOngoing(ongoing)
             .setOnlyAlertOnce(true)
             .apply {
                 if (ongoing && !paused) addAction(android.R.drawable.ic_media_pause, "Tạm dừng", pauseIntent)
                 if (paused) addAction(android.R.drawable.ic_media_play, "Tiếp tục", resumeIntent)
+                if (ongoing) addAction(android.R.drawable.ic_menu_close_clear_cancel, "Hủy", cancelIntent)
             }
             .setAutoCancel(!ongoing)
             .setProgress(0, 0, ongoing)
@@ -181,11 +317,7 @@ class VovPublicDownloadService : Service() {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "Tải nội dung VOV",
-                NotificationManager.IMPORTANCE_LOW
-            ).apply {
+            val channel = NotificationChannel(CHANNEL_ID, "Tải nội dung VOV", NotificationManager.IMPORTANCE_LOW).apply {
                 description = "Hiển thị tiến độ tải nội dung công khai từ VOV"
                 setShowBadge(false)
             }
@@ -196,17 +328,25 @@ class VovPublicDownloadService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onDestroy() {
+        VovPublicDownloadControl.resume()
+        VovPublicMediaDownloader.cancelCurrent()
         serviceScope.cancel()
         super.onDestroy()
     }
 
     companion object {
         const val ACTION_START = "vn.vovgt.plus.action.START_PUBLIC_VOV_DOWNLOAD"
+        const val ACTION_ENQUEUE = "vn.vovgt.plus.action.ENQUEUE_PUBLIC_VOV_DOWNLOAD"
+        const val ACTION_PROCESS_QUEUE = "vn.vovgt.plus.action.PROCESS_PUBLIC_VOV_QUEUE"
         const val ACTION_PAUSE = "vn.vovgt.plus.action.PAUSE_PUBLIC_VOV_DOWNLOAD"
         const val ACTION_RESUME = "vn.vovgt.plus.action.RESUME_PUBLIC_VOV_DOWNLOAD"
+        const val ACTION_CANCEL = "vn.vovgt.plus.action.CANCEL_PUBLIC_VOV_DOWNLOAD"
+        const val ACTION_RETRY = "vn.vovgt.plus.action.RETRY_PUBLIC_VOV_DOWNLOAD"
+        const val ACTION_REMOVE = "vn.vovgt.plus.action.REMOVE_PUBLIC_VOV_DOWNLOAD"
         const val EXTRA_URL = "public_vov_url"
         const val EXTRA_TITLE = "public_vov_title"
         const val EXTRA_PAGE = "public_vov_page"
+        const val EXTRA_TASK_ID = "public_vov_task_id"
         private const val CHANNEL_ID = "vov_public_downloads"
         private const val NOTIFICATION_ID = 7412
         private const val TAG = "VovPublicDownload"
