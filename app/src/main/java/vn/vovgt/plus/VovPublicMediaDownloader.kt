@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Call
@@ -26,12 +27,19 @@ internal object VovPublicMediaDownloader {
     data class Result(val displayName: String, val location: String, val mediaUri: String)
     private data class SavedFile(val location: String, val mediaUri: String)
     @Volatile private var activeCall: Call? = null
+    @Volatile private var cancelRequested: Boolean = false
 
     fun cancelCurrent() {
+        cancelRequested = true
         activeCall?.cancel()
     }
 
+    private fun ensureNotCancelled() {
+        if (cancelRequested) throw CancellationException("Đã hủy tác vụ tải VOV")
+    }
+
     private inline fun <T> withResponse(request: Request, block: (okhttp3.Response) -> T): T {
+        ensureNotCancelled()
         val call = client.newCall(request)
         activeCall = call
         try {
@@ -56,6 +64,7 @@ internal object VovPublicMediaDownloader {
         pageUrl: String,
         onProgress: (String) -> Unit
     ): Result = withContext(Dispatchers.IO) {
+        cancelRequested = false
         require(mediaUrl.startsWith("https://", ignoreCase = true)) {
             "Chỉ hỗ trợ media HTTPS công khai từ trang VOV."
         }
@@ -95,6 +104,7 @@ internal object VovPublicMediaDownloader {
                 var total = 0L
                 while (true) {
                     VovPublicDownloadControl.awaitIfPaused()
+                    ensureNotCancelled()
                     val count = input.read(buffer)
                     if (count < 0) break
                     output.write(buffer, 0, count)
@@ -168,6 +178,7 @@ internal object VovPublicMediaDownloader {
             segments.forEachIndexed { index, segment ->
                 // Pause safely between segments; preserve playlist order.
                 VovPublicDownloadControl.awaitIfPaused()
+                ensureNotCancelled()
                 copyResource(segment, pageUrl, output)
                 onProgress("Đã ghép HLS: ${index + 1}/${segments.size}")
             }
@@ -186,6 +197,7 @@ internal object VovPublicMediaDownloader {
 
     private fun copyResource(url: String, pageUrl: String, output: OutputStream) {
         VovPublicDownloadControl.awaitIfPaused()
+        ensureNotCancelled()
         withResponse(request(url, pageUrl)) { response ->
             if (!response.isSuccessful) error("Không tải được một phân đoạn HLS (HTTP ${response.code}).")
             val body = response.body ?: error("Phân đoạn HLS rỗng.")
