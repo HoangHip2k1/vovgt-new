@@ -658,8 +658,7 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
         val queued = DownloadCenterStore.tasks(context).any { it.status == "queued" }
         if (queued) {
             try {
-                androidx.core.content.ContextCompat.startForegroundService(
-                    context,
+                context.startService(
                     Intent(context, VovPublicDownloadService::class.java).setAction(VovPublicDownloadService.ACTION_PROCESS_QUEUE)
                 )
             } catch (_: Exception) { }
@@ -680,8 +679,7 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
                 ) {
                     lastQueueStartAttempt = now
                     try {
-                        androidx.core.content.ContextCompat.startForegroundService(
-                            context,
+                        context.startService(
                             Intent(context, VovPublicDownloadService::class.java)
                                 .setAction(VovPublicDownloadService.ACTION_PROCESS_QUEUE)
                         )
@@ -696,14 +694,9 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
         val intent = Intent(context, VovPublicDownloadService::class.java).setAction(action)
         if (taskId != null) intent.putExtra(VovPublicDownloadService.EXTRA_TASK_ID, taskId)
         try {
-            if (action == VovPublicDownloadService.ACTION_PAUSE ||
-                action == VovPublicDownloadService.ACTION_CANCEL ||
-                action == VovPublicDownloadService.ACTION_REMOVE
-            ) {
-                context.startService(intent)
-            } else {
-                androidx.core.content.ContextCompat.startForegroundService(context, intent)
-            }
+            // The activity is visible for these controls. The service promotes itself
+            // to foreground only when it actually has a runnable download to process.
+            context.startService(intent)
         } catch (error: Exception) {
             report(error.message ?: "Không thể điều khiển tác vụ tải")
         }
