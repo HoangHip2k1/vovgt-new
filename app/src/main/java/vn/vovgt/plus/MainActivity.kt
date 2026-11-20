@@ -137,10 +137,11 @@ private fun VovPlusApp(player: MediaController?) {
         if (!isLocal && !VovData.validPlayback(url)) report("Link phát không hợp lệ")
         else if (player == null) report("Đang kết nối bộ phát âm thanh, thử lại sau.")
         else try {
+            val localMime = if (parsedUri.scheme == "content") context.contentResolver.getType(parsedUri).orEmpty() else ""
             val mimeType = when {
                 url.substringBefore('?').endsWith(".m3u8", true) -> MimeTypes.APPLICATION_M3U8
-                url.substringBefore('?').endsWith(".mp4", true) -> MimeTypes.VIDEO_MP4
-                url.substringBefore('?').endsWith(".ts", true) -> MimeTypes.VIDEO_MP2T
+                url.substringBefore('?').endsWith(".mp4", true) || localMime.contains("mp4", true) -> MimeTypes.VIDEO_MP4
+                url.substringBefore('?').endsWith(".ts", true) || localMime.contains("mp2t", true) -> MimeTypes.VIDEO_MP2T
                 else -> MimeTypes.AUDIO_MPEG
             }
             val media = MediaItem.Builder().setUri(parsedUri).setMediaId(url)
