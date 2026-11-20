@@ -94,7 +94,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private enum class Tab(val label: String) { LIVE("Trực tiếp"), SCHEDULE("Lịch phát"), VOV("VOV"), HISTORY("Đã tải"), ACCOUNT("Tài khoản") }
+private enum class Tab(val label: String) { LIVE("Trực tiếp"), SCHEDULE("Lịch phát"), VOV("VOV"), DOWNLOADS("Tải xuống"), JOURNAL("Nhật ký"), ACCOUNT("Tài khoản") }
 private data class QueuedMedia(val url: String, val title: String)
 
 @Composable
@@ -119,17 +119,25 @@ private fun VovPlusApp(player: MediaController?) {
             }
             else -> try {
                 OfflineStore.enqueue(context, url, title)
-                selectedTab = Tab.HISTORY
+                selectedTab = Tab.DOWNLOADS
                 report("Đã thêm vào danh sách tải. Bạn có thể thoát màn hình ứng dụng.")
             } catch (ex: Exception) { report(ex.message ?: "Không thể bắt đầu tải") }
         }
     }
     val listen: (String, String) -> Unit = { url, title ->
-        if (!VovData.validPlayback(url)) report("Link phát không hợp lệ")
+        val parsedUri = Uri.parse(url)
+        val isLocal = parsedUri.scheme == "content" || parsedUri.scheme == "file"
+        if (!isLocal && !VovData.validPlayback(url)) report("Link phát không hợp lệ")
         else if (player == null) report("Đang kết nối bộ phát âm thanh, thử lại sau.")
         else try {
-            val media = MediaItem.Builder().setUri(url).setMediaId(url)
-                .setMimeType(if (VovData.isHls(url)) MimeTypes.APPLICATION_M3U8 else MimeTypes.AUDIO_MPEG)
+            val mimeType = when {
+                url.substringBefore('?').endsWith(".m3u8", true) -> MimeTypes.APPLICATION_M3U8
+                url.substringBefore('?').endsWith(".mp4", true) -> MimeTypes.VIDEO_MP4
+                url.substringBefore('?').endsWith(".ts", true) -> MimeTypes.VIDEO_MP2T
+                else -> MimeTypes.AUDIO_MPEG
+            }
+            val media = MediaItem.Builder().setUri(parsedUri).setMediaId(url)
+                .setMimeType(mimeType)
                 .setMediaMetadata(MediaMetadata.Builder().setTitle(title).setArtist("VOV Giao thông+").build())
                 .build()
             player.setMediaItem(media)
@@ -176,7 +184,8 @@ private fun VovPlusApp(player: MediaController?) {
                         val icon = when (tab) {
                             Tab.SCHEDULE -> Icons.Default.EventNote
                             Tab.LIVE -> Icons.Default.Podcasts
-                            Tab.HISTORY -> Icons.Default.DownloadDone
+                            Tab.DOWNLOADS -> Icons.Default.Download
+                            Tab.JOURNAL -> Icons.Default.History
                             Tab.VOV -> Icons.Default.Public
                             Tab.ACCOUNT -> Icons.Default.PersonOutline
                         }
@@ -201,7 +210,8 @@ private fun VovPlusApp(player: MediaController?) {
                             }
                         )
                         Tab.LIVE -> LiveScreen(onListen = listen)
-                        Tab.HISTORY -> HistoryScreen(onListen = listen, report = report)
+                        Tab.DOWNLOADS -> DownloadsScreen(onListen = listen, report = report)
+                        Tab.JOURNAL -> JournalScreen()
                         Tab.VOV -> VovArchiveBrowserScreen(report = report)
                         Tab.ACCOUNT -> AccountScreen(
                             confirmed = confirmedSession,
@@ -331,7 +341,7 @@ private fun VovArchiveBrowserScreen(report: (String) -> Unit) {
                         onClick = {
                             try {
                                 val intent = Intent(context, VovPublicDownloadService::class.java).apply {
-                                    action = VovPublicDownloadService.ACTION_START
+                                    action = VovPublicDownloadService.ACTION_ENQUEUE
                                     putExtra(VovPublicDownloadService.EXTRA_URL, detected)
                                     putExtra(VovPublicDownloadService.EXTRA_TITLE, pageTitle)
                                     putExtra(VovPublicDownloadService.EXTRA_PAGE, pageUrl)
@@ -608,137 +618,254 @@ private fun LiveScreen(onListen: (String, String) -> Unit) {
 }
 
 @Composable
-private fun HistoryScreen(onListen: (String, String) -> Unit, report: (String) -> Unit) {
+private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String) -> Unit) {
     val context = LocalContext.current
-    var list by remember { mutableStateOf<List<Download>>(emptyList()) }
-    var publicVov by remember { mutableStateOf(VovPublicDownloadState.read(context)) }
+    var mediaDownloads by remember { mutableStateOf<List<Download>>(emptyList()) }
+    var publicTasks by remember { mutableStateOf(DownloadCenterStore.tasks(context)) }
+    var storage by remember { mutableStateOf(DownloadCenterStore.storage(context)) }
+
     DisposableEffect(Unit) {
         val manager = OfflineStore.manager
         val listener = object : androidx.media3.exoplayer.offline.DownloadManager.Listener {
-            override fun onDownloadChanged(
-                manager: androidx.media3.exoplayer.offline.DownloadManager,
-                download: Download,
-                finalException: Exception?
-            ) {
-                list = OfflineStore.downloads()
+            override fun onDownloadChanged(manager: androidx.media3.exoplayer.offline.DownloadManager, download: Download, finalException: Exception?) {
+                mediaDownloads = OfflineStore.downloads()
             }
-            override fun onDownloadRemoved(
-                manager: androidx.media3.exoplayer.offline.DownloadManager,
-                download: Download
-            ) {
-                list = OfflineStore.downloads()
+            override fun onDownloadRemoved(manager: androidx.media3.exoplayer.offline.DownloadManager, download: Download) {
+                mediaDownloads = OfflineStore.downloads()
             }
         }
         manager.addListener(listener)
         onDispose { manager.removeListener(listener) }
     }
+
     LaunchedEffect(Unit) {
+        val queued = DownloadCenterStore.tasks(context).any { it.status == "queued" }
+        if (queued) {
+            try {
+                androidx.core.content.ContextCompat.startForegroundService(
+                    context,
+                    Intent(context, VovPublicDownloadService::class.java).setAction(VovPublicDownloadService.ACTION_PROCESS_QUEUE)
+                )
+            } catch (_: Exception) { }
+        }
         while (true) {
             try {
-                list = OfflineStore.downloads()
-                publicVov = VovPublicDownloadState.read(context)
+                mediaDownloads = OfflineStore.downloads()
+                publicTasks = DownloadCenterStore.tasks(context)
+                storage = DownloadCenterStore.storage(context)
             } catch (_: Exception) { }
-            delay(700)
+            delay(1000)
         }
     }
+
+    fun sendPublicAction(action: String, taskId: String? = null) {
+        val intent = Intent(context, VovPublicDownloadService::class.java).setAction(action)
+        if (taskId != null) intent.putExtra(VovPublicDownloadService.EXTRA_TASK_ID, taskId)
+        try {
+            androidx.core.content.ContextCompat.startForegroundService(context, intent)
+        } catch (error: Exception) {
+            report(error.message ?: "Không thể điều khiển tác vụ tải")
+        }
+    }
+
     LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item {
-            SectionTitle("Quản lý tải xuống", "Theo dõi chung VOV Media và VOV Nghe & xem lại")
-            Spacer(Modifier.height(10.dp))
+            SectionTitle("Quản lý tải xuống", "Hàng đợi, nội dung offline và dung lượng lưu trữ")
             GlassCard {
-                Column(Modifier.fillMaxWidth().padding(2.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Public, null, tint = MaterialTheme.colorScheme.primary)
+                        Icon(Icons.Default.Storage, null, tint = MaterialTheme.colorScheme.primary)
                         Spacer(Modifier.width(8.dp))
-                        Column(Modifier.weight(1f)) {
-                            Text("VOV • Nghe và xem lại", fontWeight = FontWeight.Bold)
-                            Text(publicVov.title, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+                        Text("Storage Manager", fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                        Text("${storage.publicFileCount} file", color = MaterialTheme.colorScheme.primary, fontSize = 12.sp)
+                    }
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Column {
+                            Text("VOV Archive", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(formatDownloadBytes(storage.publicBytes), fontWeight = FontWeight.SemiBold)
                         }
-                        Text(
-                            when (publicVov.status) {
-                                "running" -> "Đang tải"
-                                "paused" -> "Đã tạm dừng"
-                                "completed" -> "Hoàn tất"
-                                "failed" -> "Lỗi"
-                                else -> "Chưa tải"
-                            },
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = when (publicVov.status) {
-                                "completed" -> Color(0xFF15B78D)
-                                "failed" -> MaterialTheme.colorScheme.error
-                                else -> MaterialTheme.colorScheme.primary
-                            }
-                        )
-                    }
-                    if (publicVov.status == "running") {
-                        LinearProgressIndicator(
-                            progress = { if (publicVov.progress >= 0f) publicVov.progress else 0f },
-                            modifier = Modifier.fillMaxWidth().height(6.dp)
-                        )
-                    }
-                    if (publicVov.status == "running" || publicVov.status == "paused") {
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            if (publicVov.status == "running") {
-                                OutlinedButton(onClick = {
-                                    context.startService(Intent(context, VovPublicDownloadService::class.java).setAction(VovPublicDownloadService.ACTION_PAUSE))
-                                }) {
-                                    Icon(Icons.Default.Pause, null, Modifier.size(16.dp))
-                                    Text(" Tạm dừng")
-                                }
-                            } else {
-                                Button(onClick = {
-                                    context.startService(Intent(context, VovPublicDownloadService::class.java).setAction(VovPublicDownloadService.ACTION_RESUME))
-                                }) {
-                                    Icon(Icons.Default.PlayArrow, null, Modifier.size(16.dp))
-                                    Text(" Tiếp tục")
-                                }
-                            }
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text("Cache offline", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(formatDownloadBytes(storage.cacheBytes), fontWeight = FontWeight.SemiBold)
                         }
                     }
-                    if (publicVov.detail.isNotBlank()) {
-                        Text(publicVov.detail, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    LinearProgressIndicator(
+                        progress = {
+                            val used = storage.publicBytes + storage.cacheBytes
+                            if (storage.freeBytes + used > 0L) (used.toFloat() / (storage.freeBytes + used).toFloat()).coerceIn(0f, 1f) else 0f
+                        },
+                        modifier = Modifier.fillMaxWidth().height(6.dp)
+                    )
+                    Text("Bộ nhớ còn trống: ${formatDownloadBytes(storage.freeBytes)}", fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    OutlinedButton(
+                        onClick = {
+                            val cutoff = System.currentTimeMillis() - 30L * 86_400_000L
+                            val oldMedia = mediaDownloads.filter {
+                                it.state == Download.STATE_COMPLETED && it.startTimeMs in 1 until cutoff
+                            }
+                            oldMedia.forEach { OfflineStore.remove(context, it.request.id) }
+                            val removedFiles = DownloadCenterStore.deleteOldFiles(context, 30)
+                            val oldTasks = publicTasks.filter {
+                                it.status == "completed" && it.updatedAt in 1 until cutoff
+                            }
+                            oldTasks.forEach { DownloadCenterStore.removeTask(context, it.id) }
+                            report("Đã yêu cầu dọn ${oldMedia.size + removedFiles} nội dung cũ hơn 30 ngày")
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(Icons.Default.DeleteSweep, null, Modifier.size(18.dp))
+                        Spacer(Modifier.width(7.dp))
+                        Text("Xóa nội dung cũ hơn 30 ngày")
                     }
-                    if (publicVov.status == "completed" || publicVov.status == "failed") {
-                        TextButton(onClick = {
-                            VovPublicDownloadState.clear(context)
-                            publicVov = VovPublicDownloadState.read(context)
-                        }) { Text("Xóa trạng thái") }
-                    }
-                }
-            }
-            Spacer(Modifier.height(8.dp))
-            SectionTitle("VOV Media", "Các nội dung tải bằng trình quản lý offline")
-            Spacer(Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                OutlinedButton(onClick = { OfflineStore.pause(context); report("Đã tạm dừng tải") }) {
-                    Icon(Icons.Default.Pause, null, Modifier.size(17.dp))
-                    Text(" Tạm dừng")
-                }
-                OutlinedButton(onClick = { OfflineStore.resume(context); report("Đã yêu cầu tiếp tục tải") }) {
-                    Icon(Icons.Default.Refresh, null, Modifier.size(17.dp))
-                    Text(" Tiếp tục")
                 }
             }
         }
 
-        if (list.isEmpty()) item {
-            GlassCard {
-                Column(Modifier.fillMaxWidth().padding(vertical = 32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(Icons.Default.CloudDownload, null, Modifier.size(52.dp), tint = MaterialTheme.colorScheme.primary)
-                    Spacer(Modifier.height(10.dp))
-                    Text("Chưa có bản tải nào", fontWeight = FontWeight.Bold)
-                    Text("Chọn chương trình trong tab Lịch phát để lưu", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        item {
+            val waiting = publicTasks.count { it.status == "queued" }
+            val active = publicTasks.count { it.status == "running" || it.status == "paused" }
+            SectionTitle("Download Queue", "${active} đang xử lý · ${waiting} đang chờ")
+        }
+
+        if (publicTasks.isEmpty()) {
+            item {
+                GlassCard {
+                    Column(Modifier.fillMaxWidth().padding(vertical = 20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(Icons.Default.CloudDownload, null, Modifier.size(42.dp), tint = MaterialTheme.colorScheme.primary)
+                        Spacer(Modifier.height(8.dp))
+                        Text("Hàng đợi VOV đang trống", fontWeight = FontWeight.Bold)
+                        Text("Thêm chương trình từ tab VOV để tải nhiều nội dung lần lượt.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                    }
                 }
             }
         }
-        items(list, key = { it.request.id }) { d ->
+
+        items(publicTasks.sortedWith(compareBy<DownloadCenterStore.PublicTask> {
+            when (it.status) {
+                "running" -> 0
+                "paused" -> 1
+                "queued" -> 2
+                "failed" -> 3
+                "completed" -> 4
+                else -> 5
+            }
+        }.thenBy { it.createdAt }), key = { it.id }) { task ->
+            val statusLabel = when (task.status) {
+                "queued" -> "Đang chờ"
+                "running" -> "Đang tải"
+                "paused" -> "Đã tạm dừng"
+                "completed" -> "Đã tải xong"
+                "failed" -> "Tải thất bại"
+                "cancelled" -> "Đã hủy"
+                else -> task.status
+            }
+            GlassCard {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        when (task.status) {
+                            "completed" -> Icons.Default.CheckCircle
+                            "failed" -> Icons.Default.ErrorOutline
+                            "paused" -> Icons.Default.PauseCircle
+                            else -> Icons.Default.Download
+                        },
+                        null,
+                        tint = when (task.status) {
+                            "completed" -> Color(0xFF15B78D)
+                            "failed" -> MaterialTheme.colorScheme.error
+                            else -> MaterialTheme.colorScheme.primary
+                        }
+                    )
+                    Spacer(Modifier.width(9.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(task.title, fontWeight = FontWeight.Bold, maxLines = 2)
+                        Text("VOV Nghe & xem lại · $statusLabel", fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    if (task.status == "running" && task.progress >= 0f) {
+                        Text("${(task.progress * 100).toInt()}%", fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary)
+                    }
+                }
+                if (task.status == "running" || task.status == "paused") {
+                    LinearProgressIndicator(
+                        progress = { task.progress.coerceAtLeast(0f).coerceAtMost(1f) },
+                        modifier = Modifier.fillMaxWidth().height(6.dp)
+                    )
+                }
+                if (task.detail.isNotBlank()) {
+                    Text(task.detail, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+                    when (task.status) {
+                        "running" -> TextButton(onClick = { sendPublicAction(VovPublicDownloadService.ACTION_PAUSE) }) {
+                            Icon(Icons.Default.Pause, null); Text("Tạm dừng")
+                        }
+                        "paused" -> TextButton(onClick = { sendPublicAction(VovPublicDownloadService.ACTION_RESUME) }) {
+                            Icon(Icons.Default.PlayArrow, null); Text("Tiếp tục")
+                        }
+                        "failed", "cancelled" -> TextButton(onClick = { sendPublicAction(VovPublicDownloadService.ACTION_RETRY, task.id) }) {
+                            Icon(Icons.Default.Refresh, null); Text("Thử lại")
+                        }
+                        "completed" -> if (task.mediaUri.isNotBlank()) {
+                            TextButton(onClick = { onListen(task.mediaUri, task.title) }) {
+                                Icon(Icons.Default.PlayArrow, null); Text("Nghe offline")
+                            }
+                        }
+                    }
+                    Spacer(Modifier.weight(1f))
+                    if (task.status != "running" && task.status != "paused") {
+                        TextButton(onClick = {
+                            if (task.status == "queued") sendPublicAction(VovPublicDownloadService.ACTION_CANCEL, task.id)
+                            else {
+                                DownloadCenterStore.removeTask(context, task.id)
+                                publicTasks = DownloadCenterStore.tasks(context)
+                            }
+                        }) {
+                            Icon(Icons.Default.DeleteOutline, null, Modifier.size(17.dp))
+                            Text(if (task.status == "queued") "Hủy" else "Xóa")
+                        }
+                    } else {
+                        TextButton(onClick = { sendPublicAction(VovPublicDownloadService.ACTION_CANCEL, task.id) }) {
+                            Icon(Icons.Default.Close, null, Modifier.size(17.dp)); Text("Hủy")
+                        }
+                    }
+                }
+            }
+        }
+
+        item {
+            SectionTitle("VOV Media", "Tải HLS bằng Media3 · hỗ trợ nhiều tác vụ song song")
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick = { OfflineStore.pause(context); report("Đã tạm dừng hàng đợi VOV Media") }) {
+                    Icon(Icons.Default.Pause, null, Modifier.size(17.dp)); Text("Tạm dừng")
+                }
+                OutlinedButton(onClick = { OfflineStore.resume(context); report("Đã tiếp tục hàng đợi VOV Media") }) {
+                    Icon(Icons.Default.PlayArrow, null, Modifier.size(17.dp)); Text("Tiếp tục")
+                }
+            }
+        }
+
+        if (mediaDownloads.isEmpty()) {
+            item {
+                GlassCard {
+                    Column(Modifier.fillMaxWidth().padding(vertical = 18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("Chưa có nội dung VOV Media", fontWeight = FontWeight.Bold)
+                        Text("Chọn chương trình trong tab Lịch phát để lưu offline.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                    }
+                }
+            }
+        }
+
+        items(mediaDownloads, key = { "media-${it.request.id}" }) { d ->
             val completed = d.state == Download.STATE_COMPLETED
             val label = when (d.state) {
                 Download.STATE_COMPLETED -> "Đã hoàn tất · nghe offline"
                 Download.STATE_DOWNLOADING -> "Đang tải"
                 Download.STATE_QUEUED -> "Đang chờ"
-                Download.STATE_STOPPED -> "Đã dừng"
+                Download.STATE_STOPPED -> "Đã tạm dừng"
                 Download.STATE_FAILED -> "Tải lỗi · kiểm tra quyền truy cập / kết nối"
                 Download.STATE_REMOVING -> "Đang xóa"
                 Download.STATE_RESTARTING -> "Đang tải lại"
@@ -783,8 +910,7 @@ private fun HistoryScreen(onListen: (String, String) -> Unit, report: (String) -
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (completed) {
                         TextButton(onClick = { onListen(d.request.uri.toString(), OfflineStore.title(d)) }) {
-                            Icon(Icons.Default.PlayArrow, null)
-                            Text("Nghe offline")
+                            Icon(Icons.Default.PlayArrow, null); Text("Nghe offline")
                         }
                         val exportedUri = AudioExportState.uri(context, d.request.id)
                         if (exportedUri != null) {
@@ -794,19 +920,16 @@ private fun HistoryScreen(onListen: (String, String) -> Unit, report: (String) -
                                         setDataAndType(exportedUri, "audio/mp4")
                                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                     })
-                                } catch (e: Exception) { report("Không tìm thấy ứng dụng mở file M4A") }
+                                } catch (_: Exception) { report("Không tìm thấy ứng dụng mở file M4A") }
                             }) {
-                                Icon(Icons.Default.FolderOpen, null)
-                                Text("Mở file")
+                                Icon(Icons.Default.FolderOpen, null); Text("Mở file")
                             }
-                        } else if (AudioExportState.status(context, d.request.id) != "queued" &&
-                            AudioExportState.status(context, d.request.id) != "exporting") {
+                        } else if (AudioExportState.status(context, d.request.id) !in setOf("queued", "exporting")) {
                             TextButton(onClick = {
                                 AudioExportState.request(context, d, force = true)
                                 report("Đã yêu cầu xuất file M4A")
                             }) {
-                                Icon(Icons.Default.SaveAlt, null)
-                                Text("Xuất M4A")
+                                Icon(Icons.Default.SaveAlt, null); Text("Xuất M4A")
                             }
                         }
                     }
@@ -814,18 +937,136 @@ private fun HistoryScreen(onListen: (String, String) -> Unit, report: (String) -
                         TextButton(onClick = {
                             try { OfflineStore.enqueue(context, d.request.uri.toString(), OfflineStore.title(d)) }
                             catch (e: Exception) { report(e.message ?: "Không thể tải lại") }
-                        }) { Text("Thử lại") }
+                        }) { Icon(Icons.Default.Refresh, null); Text("Thử lại") }
                     }
                     Spacer(Modifier.weight(1f))
                     TextButton(onClick = { OfflineStore.remove(context, d.request.id); report("Đã yêu cầu xóa bản tải") }) {
-                        Icon(Icons.Default.DeleteOutline, contentDescription = null, Modifier.size(18.dp))
-                        Text("Xóa")
+                        Icon(Icons.Default.DeleteOutline, null, Modifier.size(18.dp)); Text("Xóa")
                     }
                 }
             }
         }
-        item { Text("Bản HLS vẫn được giữ để nghe offline trong ứng dụng. File âm thanh M4A được xuất riêng vào Download/VOV Giao Thong+ để mở bằng ứng dụng khác.",
-            fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        item {
+            Text(
+                "Nội dung đã tải được lưu riêng theo từng nguồn. HLS VOV Media phát từ bộ nhớ offline trong ứng dụng; MP4/TS công khai được lưu trong Download/VOV.",
+                fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun JournalScreen() {
+    val context = LocalContext.current
+    var entries by remember { mutableStateOf(DownloadCenterStore.journal(context)) }
+    var filter by remember { mutableStateOf("all") }
+    var confirmClear by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            entries = DownloadCenterStore.journal(context)
+            delay(1200)
+        }
+    }
+
+    val visibleEntries = entries.filter {
+        filter == "all" ||
+            (filter == "media" && it.source == "VOV Media") ||
+            (filter == "public" && it.source == "VOV Nghe & xem lại")
+    }
+
+    LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        item {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    SectionTitle("Nhật ký tải xuống", "Lưu chi tiết các sự kiện tải, tạm dừng, thử lại và hoàn tất")
+                }
+                IconButton(onClick = { confirmClear = true }, enabled = entries.isNotEmpty()) {
+                    Icon(Icons.Default.DeleteSweep, contentDescription = "Xóa nhật ký")
+                }
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                FilterChip(selected = filter == "all", onClick = { filter = "all" }, label = { Text("Tất cả") })
+                FilterChip(selected = filter == "media", onClick = { filter = "media" }, label = { Text("VOV Media") })
+                FilterChip(selected = filter == "public", onClick = { filter = "public" }, label = { Text("VOV công khai") })
+            }
+        }
+
+        if (visibleEntries.isEmpty()) {
+            item {
+                GlassCard {
+                    Column(Modifier.fillMaxWidth().padding(vertical = 28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(Icons.Default.History, null, Modifier.size(44.dp), tint = MaterialTheme.colorScheme.primary)
+                        Spacer(Modifier.height(8.dp))
+                        Text("Chưa có hoạt động nào", fontWeight = FontWeight.Bold)
+                        Text("Các sự kiện tải xuống sẽ được ghi lại tại đây.",
+                            fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
+            }
+        }
+
+        items(visibleEntries, key = { it.id }) { entry ->
+            val actionLabel = when (entry.action) {
+                "queued" -> "Đã xếp hàng"
+                "started" -> "Bắt đầu tải"
+                "paused" -> "Tạm dừng"
+                "resumed" -> "Tiếp tục"
+                "completed" -> "Hoàn tất"
+                "failed" -> "Thất bại"
+                "cancelled" -> "Đã hủy"
+                "retry" -> "Thử tải lại"
+                "retrying" -> "Đang thử lại"
+                "removing" -> "Đang xóa"
+                else -> entry.action
+            }
+            val tint = when (entry.action) {
+                "completed" -> Color(0xFF15B78D)
+                "failed" -> MaterialTheme.colorScheme.error
+                else -> MaterialTheme.colorScheme.primary
+            }
+            GlassCard {
+                Row(verticalAlignment = Alignment.Top) {
+                    Icon(
+                        when (entry.action) {
+                            "completed" -> Icons.Default.CheckCircle
+                            "failed" -> Icons.Default.ErrorOutline
+                            "paused" -> Icons.Default.PauseCircle
+                            "cancelled", "removing" -> Icons.Default.DeleteOutline
+                            else -> Icons.Default.History
+                        },
+                        null, tint = tint, modifier = Modifier.padding(top = 2.dp)
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                        Text(entry.title, fontWeight = FontWeight.SemiBold, maxLines = 2)
+                        Text("$actionLabel · ${entry.source}", fontSize = 11.sp, color = tint, fontWeight = FontWeight.Medium)
+                        Text(entry.detail, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss", java.util.Locale("vi", "VN"))
+                                .format(java.util.Date(entry.timestamp)),
+                            fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    if (confirmClear) {
+        AlertDialog(
+            onDismissRequest = { confirmClear = false },
+            title = { Text("Xóa toàn bộ nhật ký?") },
+            text = { Text("Thao tác này chỉ xóa lịch sử sự kiện, không xóa các file đã tải.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    DownloadCenterStore.clearJournal(context)
+                    entries = emptyList()
+                    confirmClear = false
+                }) { Text("Xóa nhật ký") }
+            },
+            dismissButton = { TextButton(onClick = { confirmClear = false }) { Text("Giữ lại") } }
+        )
     }
 }
 
