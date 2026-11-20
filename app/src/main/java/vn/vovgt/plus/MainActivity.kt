@@ -17,6 +17,7 @@ import android.content.Intent
 import android.app.DownloadManager
 import android.os.Environment
 import android.webkit.WebChromeClient
+import android.view.View
 import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -36,6 +37,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -209,7 +211,7 @@ private fun VovPlusApp(player: MediaController?) {
             Column(Modifier.fillMaxSize().padding(insets)) {
                 Box(Modifier.weight(1f)) {
                     Tab.entries.filter { it in visitedTabs }.forEach { tab ->
-                        Box(Modifier.then(if (selectedTab == tab) Modifier.fillMaxSize() else Modifier.size(0.dp))) {
+                        Box(Modifier.then(if (selectedTab == tab) Modifier.fillMaxSize() else Modifier.size(0.dp)).clipToBounds()) {
                             when (tab) {
                         Tab.SCHEDULE -> ScheduleScreen(
                             onListen = listen, onDownload = download, report = report,
@@ -222,8 +224,9 @@ private fun VovPlusApp(player: MediaController?) {
                         Tab.LIVE -> LiveScreen(onListen = listen)
                         Tab.DOWNLOADS -> DownloadsScreen(onListen = listen, report = report, active = selectedTab == tab)
                         Tab.JOURNAL -> JournalScreen(active = selectedTab == tab)
-                        Tab.VOV -> VovArchiveBrowserScreen(report = report)
+                        Tab.VOV -> VovArchiveBrowserScreen(report = report, active = selectedTab == tab)
                         Tab.ACCOUNT -> AccountScreen(
+                            active = selectedTab == tab,
                             confirmed = confirmedSession,
                             onConfirmed = {
                                 confirmedSession = true
@@ -253,7 +256,7 @@ private fun VovPlusApp(player: MediaController?) {
 }
 
 @Composable
-private fun VovArchiveBrowserScreen(report: (String) -> Unit) {
+private fun VovArchiveBrowserScreen(report: (String) -> Unit, active: Boolean) {
     val context = LocalContext.current
     var detected by remember { mutableStateOf("") }
     var mediaKind by remember { mutableStateOf("") }
@@ -401,7 +404,23 @@ private fun VovArchiveBrowserScreen(report: (String) -> Unit) {
         if (webError.isNotBlank()) {
             Text("Không mở được trang VOV: $webError", color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(12.dp))
         }
-        AndroidView(factory = { webView }, modifier = Modifier.weight(1f))
+        AndroidView(
+            factory = { webView },
+            modifier = Modifier.weight(1f),
+            update = { view ->
+                if (active) {
+                    if (view.visibility != View.VISIBLE) {
+                        view.visibility = View.VISIBLE
+                        view.onResume()
+                    }
+                } else if (view.visibility != View.GONE) {
+                    // WebView may host a native video surface that can draw outside
+                    // a zero-sized Compose parent. Hide the actual Android view.
+                    view.onPause()
+                    view.visibility = View.GONE
+                }
+            }
+        )
     }
 }
 
@@ -1129,7 +1148,7 @@ private fun JournalScreen(active: Boolean) {
 }
 
 @Composable
-private fun AccountScreen(confirmed: Boolean, onConfirmed: () -> Unit, onLogout: () -> Unit, report: (String) -> Unit) {
+private fun AccountScreen(active: Boolean, confirmed: Boolean, onConfirmed: () -> Unit, onLogout: () -> Unit, report: (String) -> Unit) {
     val context = LocalContext.current
     var browserOpen by remember { mutableStateOf(false) }
     var currentUrl by remember { mutableStateOf("https://vovmedia.vn/login") }
@@ -1197,7 +1216,17 @@ private fun AccountScreen(confirmed: Boolean, onConfirmed: () -> Unit, onLogout:
                         }
                         loadUrl("https://vovmedia.vn/login")
                     }
-                }, modifier = Modifier.fillMaxWidth().height(370.dp))
+                }, modifier = Modifier.fillMaxWidth().height(370.dp), update = { view ->
+                    if (active) {
+                        if (view.visibility != View.VISIBLE) {
+                            view.visibility = View.VISIBLE
+                            view.onResume()
+                        }
+                    } else if (view.visibility != View.GONE) {
+                        view.onPause()
+                        view.visibility = View.GONE
+                    }
+                })
                 Spacer(Modifier.height(12.dp))
                 Button(onClick = {
                     val host = Uri.parse(currentUrl).host.orEmpty()
