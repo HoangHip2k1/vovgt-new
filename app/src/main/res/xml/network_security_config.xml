@@ -1,6 +1,6 @@
-PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPG5ldHdv
-cmstc2VjdXJpdHktY29uZmlnPgogICAgPGRvbWFpbi1jb25maWcgY2xlYXJ0
-ZXh0VHJhZmZpY1Blcm1pdHRlZD0idHJ1ZSI+CiAgICAgICAgPGRvbWFpbiBp
-bmNsdWRlU3ViZG9tYWlucz0iZmFsc2UiPm1lZGlhcmQua3l0aHVhdHZvdi52
-bjwvZG9tYWluPgogICAgPC9kb21haW4tY29uZmlnPgo8L25ldHdvcmstc2Vj
-dXJpdHktY29uZmlnPgo=
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">mediard.kythuatvov.vn</domain>
+    </domain-config>
+</network-security-config>
