@@ -661,8 +661,20 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
         while (true) {
             try {
                 mediaDownloads = OfflineStore.downloads()
-                publicTasks = DownloadCenterStore.tasks(context)
+                val queueSnapshot = DownloadCenterStore.tasks(context)
+                publicTasks = queueSnapshot
                 storage = DownloadCenterStore.storage(context)
+                if (queueSnapshot.any { it.status == "queued" } &&
+                    queueSnapshot.none { it.status == "running" || it.status == "paused" }
+                ) {
+                    try {
+                        androidx.core.content.ContextCompat.startForegroundService(
+                            context,
+                            Intent(context, VovPublicDownloadService::class.java)
+                                .setAction(VovPublicDownloadService.ACTION_PROCESS_QUEUE)
+                        )
+                    } catch (_: Exception) { }
+                }
             } catch (_: Exception) { }
             delay(1000)
         }
