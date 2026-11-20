@@ -635,6 +635,7 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
     var publicTasks by remember { mutableStateOf(DownloadCenterStore.tasks(context)) }
     var storage by remember { mutableStateOf(DownloadCenterStore.StorageSnapshot(0, 0L, 0L, 0L)) }
     var lastQueueStartAttempt by remember { mutableStateOf(0L) }
+    var confirmCleanup by remember { mutableStateOf(false) }
 
     DisposableEffect(Unit) {
         val manager = OfflineStore.manager
@@ -732,23 +733,7 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
                     Text("Bộ nhớ còn trống: ${formatDownloadBytes(storage.freeBytes)}", fontSize = 11.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                     OutlinedButton(
-                        onClick = {
-                            val cutoff = System.currentTimeMillis() - 30L * 86_400_000L
-                            val oldMedia = mediaDownloads.filter {
-                                it.state == Download.STATE_COMPLETED && it.startTimeMs in 1 until cutoff
-                            }
-                            oldMedia.forEach { OfflineStore.remove(context, it.request.id) }
-                            val removedFiles = DownloadCenterStore.deleteOldFiles(context, 30)
-                            val oldTasks = publicTasks.filter {
-                                it.status == "completed" && it.updatedAt in 1 until cutoff
-                            }
-                            oldTasks.forEach { DownloadCenterStore.removeTask(context, it.id) }
-                            DownloadCenterStore.record(
-                                context, "Storage Manager", "Dọn dẹp bộ nhớ", "cleanup",
-                                "Đã xóa ${oldMedia.size + removedFiles} tệp/nội dung cũ hơn 30 ngày"
-                            )
-                            report("Đã yêu cầu dọn ${oldMedia.size + removedFiles} nội dung cũ hơn 30 ngày")
-                        },
+                        onClick = { confirmCleanup = true },
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Icon(Icons.Default.DeleteSweep, null, Modifier.size(18.dp))
@@ -989,6 +974,35 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
                 fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+    }
+
+    if (confirmCleanup) {
+        AlertDialog(
+            onDismissRequest = { confirmCleanup = false },
+            title = { Text("Dọn nội dung cũ?") },
+            text = { Text("Xóa các bản tải hoàn tất trong Download/VOV và VOV Media cũ hơn 30 ngày. Thao tác này không thể hoàn tác.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    val cutoff = System.currentTimeMillis() - 30L * 86_400_000L
+                    val oldMedia = mediaDownloads.filter {
+                        it.state == Download.STATE_COMPLETED && it.startTimeMs in 1 until cutoff
+                    }
+                    oldMedia.forEach { OfflineStore.remove(context, it.request.id) }
+                    val removedFiles = DownloadCenterStore.deleteOldFiles(context, 30)
+                    val oldTasks = publicTasks.filter {
+                        it.status == "completed" && it.updatedAt in 1 until cutoff
+                    }
+                    oldTasks.forEach { DownloadCenterStore.removeTask(context, it.id) }
+                    DownloadCenterStore.record(
+                        context, "Storage Manager", "Dọn dẹp bộ nhớ", "cleanup",
+                        "Đã xóa ${oldMedia.size + removedFiles} tệp/nội dung cũ hơn 30 ngày"
+                    )
+                    report("Đã yêu cầu dọn ${oldMedia.size + removedFiles} nội dung cũ hơn 30 ngày")
+                    confirmCleanup = false
+                }) { Text("Xóa nội dung cũ") }
+            },
+            dismissButton = { TextButton(onClick = { confirmCleanup = false }) { Text("Hủy") } }
+        )
     }
 }
 
