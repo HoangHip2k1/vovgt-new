@@ -632,6 +632,7 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
     var mediaDownloads by remember { mutableStateOf<List<Download>>(emptyList()) }
     var publicTasks by remember { mutableStateOf(DownloadCenterStore.tasks(context)) }
     var storage by remember { mutableStateOf(DownloadCenterStore.storage(context)) }
+    var lastQueueStartAttempt by remember { mutableStateOf(0L) }
 
     DisposableEffect(Unit) {
         val manager = OfflineStore.manager
@@ -664,9 +665,12 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
                 val queueSnapshot = DownloadCenterStore.tasks(context)
                 publicTasks = queueSnapshot
                 storage = DownloadCenterStore.storage(context)
+                val now = System.currentTimeMillis()
                 if (queueSnapshot.any { it.status == "queued" } &&
-                    queueSnapshot.none { it.status == "running" || it.status == "paused" }
+                    queueSnapshot.none { it.status == "running" || it.status == "paused" } &&
+                    now - lastQueueStartAttempt > 5_000L
                 ) {
+                    lastQueueStartAttempt = now
                     try {
                         androidx.core.content.ContextCompat.startForegroundService(
                             context,
