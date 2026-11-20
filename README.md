@@ -1,55 +1,88 @@
 # VOV Giao thông+ — Android (Kotlin / Jetpack Compose)
 
-Ứng dụng Android viết mới từ file `VOV Giao Thông.html`, không chỉ là WebView bọc HTML. Giao diện hỗ trợ Material 3, sáng/tối, tiếng Việt, bốn luồng trực tiếp và lưu chương trình HLS offline trong app.
+Ứng dụng Android dùng Kotlin, Jetpack Compose Material 3 và Media3. Repository này là nhánh phát triển riêng; mã nguồn gốc tại [HoangHip2k1/vovgt](https://github.com/HoangHip2k1/vovgt) không được sửa đổi.
 
-## Tải APK qua GitHub Actions — không cần Android Studio
+## Build APK bằng GitHub Actions
 
-1. Đăng nhập GitHub → chọn **New repository** → tạo repository, ví dụ `vov-giao-thong-plus`.
-2. Giải nén ZIP này. **Đưa toàn bộ các file và thư mục ở bên trong `VOV_Giao_Thong_Plus_Android/` lên THƯ MỤC GỐC của repository**. Đặc biệt `.github/workflows/build-apk.yml` phải nằm đúng vị trí. Bạn có thể dùng **Add file → Upload files** (trình duyệt có thể bỏ qua thư mục ẩn `.github`; hãy kiểm tra sau khi upload, hoặc sử dụng Git/GitHub Desktop để push cả thư mục).
-3. Commit vào nhánh `main` hoặc `master`. Vào **Actions** → workflow **Build APK — VOV Giao thông+** → **Run workflow** (hoặc đợi job chạy tự động khi push).
-4. Khi job báo xanh, mở job → phía cuối trang **Artifacts** → nhấn `VOV-Giao-Thong-Plus-APK` để tải ZIP chứa `VOV-Giao-Thong-Plus-v1.0.0.apk`.
-5. Giải nén artifact và cài APK trên thiết bị Android 8.0 (API 26) trở lên. Android có thể yêu cầu cho phép cài app từ nguồn này và cấp quyền thông báo.
+1. Mở tab **Actions** của repository.
+2. Chọn workflow **Build VOVGT Android APK**.
+3. Push commit lên nhánh `main` để tự chạy build, hoặc chọn **Run workflow** để chạy thủ công.
+4. Khi workflow hoàn tất với trạng thái **Success**, mở run tương ứng và tải artifact **VOV-GT-Android-APK**.
+5. Giải nén ZIP và cài `app-debug.apk` trên thiết bị Android 8.0 (API 26) trở lên.
 
-**Lưu ý:** APK trong Actions là **debug APK có chữ ký debug**, chỉ dùng thử/cài cá nhân. Muốn phát hành chính thức, cần thiết lập release signing keystore bằng GitHub Secrets. Đừng commit keystore/mật khẩu.
+Workflow hiện tại: `.github/workflows/import-source.yml`. Build dùng JDK 17, Android SDK 36 và Gradle 8.13.
 
-## Tính năng
+**Lưu ý phát hành:** APK trong Actions là debug APK, phù hợp để thử nghiệm/cài cá nhân. Muốn phát hành chính thức cần thiết lập release signing keystore qua GitHub Secrets. Không commit keystore hoặc mật khẩu vào repository.
 
-- **Lịch phát:** Giữ nguyên dữ liệu 7 ngày của hai kênh Hà Nội và TP.HCM từ HTML đính kèm (294 khung giờ). Duyên Hải chưa có lịch phát lại trong nguồn HTML.
-- **Link phát lại:** tạo URL `/replay/<slug>/playlist.m3u8?from=<epoch>&to=<epoch>` với thời gian `Asia/Ho_Chi_Minh`, có nút copy, nghe thử, tải; hoặc tự dán URL HTTPS `.m3u8` để nghe/tải.
-- **4 đài trực tiếp:** Hà Nội, TP.HCM, Mekong, Duyên Hải từ đúng các URL đã cung cấp. Nghe chạy dưới `MediaSessionService` nên có thể tiếp tục khi khóa màn hình/chuyển app.
-- **Đăng nhập trước tải:** nhúng **trang web chính thức `https://vovmedia.vn/login`** để tự đăng nhập, không thu mật khẩu. Bắt buộc xác nhận phiên trước khi gửi yêu cầu tải. WebView CookieManager chia sẻ cookies với OkHttp qua CookieJar, chỉ gửi cookie đến host phù hợp.
-- **Tải HLS offline:** `Media3 DownloadService` + `DownloadManager` + `SimpleCache` (không giới hạn tự xóa) + `PlatformScheduler` giúp tải khi rời app và tiếp tục tải sau gián đoạn mạng tùy chính sách Android.
-- **Tiến độ / lịch sử:** thông báo foreground, trạng thái/thanh tiến độ, thông báo khi xong/lỗi, tạm dừng/tiếp tục, xóa, nghe offline.
-- **Icon:** logo riêng dạng sóng radio – giao thông – dấu cộng.
+## Điều hướng chính
 
-## Những giới hạn cần hiểu trước khi dùng
+Thanh điều hướng dưới cùng có 6 tab độc lập:
 
-1. **Đăng nhập VOV Media:** Website chính thức có form login, nhưng không công bố trong tài liệu đã kiểm tra cơ chế API dành cho app bên thứ ba. App chỉ có thể xác nhận trình duyệt đã rời trang `/login` và có cookie, **không thể khẳng định người dùng đã được backend cấp quyền**. Media3 sẽ yêu cầu tài nguyên theo chính sách máy chủ; nếu website dùng token lưu trong `localStorage`, yêu cầu xác thực khác, DRM, hoặc chỉ hỗ trợ trình duyệt, việc tải/phát lại có thể bị từ chối. **Ứng dụng không bypass DRM/paywall/đăng nhập.** Phải thử trên điện thoại với tài khoản hợp lệ.
-2. **Tải HLS không phải xuất MP3:** bản tải lưu thành **cache HLS riêng của ứng dụng**, có thể nghe trong tab Đã tải khi mất mạng; không có tệp MP3 trong thư mục `Downloads`. Không chuyển đổi/ghép thành MP3 trong phiên bản này. Xóa app sẽ xóa cache.
-3. **Luồng trực tiếp:** chỉ nghe; không tải vô hạn live HLS làm file. Nội dung phát lại chỉ tải khi kết thúc theo lịch địa phương. Chưa xác thực URL hoặc nội dung thực tế với máy chủ bằng tài khoản người dùng, nên không bảo đảm tất cả URL hoạt động.
-4. **Quyền tải:** Chỉ dùng trong phạm vi quyền nghe và lưu trữ được VOV Media cho phép. Một số chương trình không tồn tại hoặc không còn được lưu trên máy chủ.
-5. **Tải nền:** Android có thể dừng tải khi người dùng dùng **Force stop**, tắt máy, giới hạn pin rất chặt, mất mạng hoặc cookie hết hạn. Android 15+ hạn chế thời lượng foreground service `dataSync`; đây không phải dịch vụ không giới hạn.
-6. **Các URL HTTPS hợp lệ ngoài VOV:** ứng dụng chấp nhận dán HLS khác; bản phát HLS dạng live không có kết thúc sẽ không tải offline. App không gửi cookie của VOV Media cho các domain khác.
+- **Trực tiếp:** 4 kênh Hà Nội, TP.HCM, Mekong và Duyên Hải.
+- **Lịch phát:** lịch chương trình, tạo link replay, nghe thử và tải.
+- **VOV:** trình duyệt nội dung công khai VOV Nghe và xem lại.
+- **Tải xuống:** hàng đợi, tiến độ, quản lý file, bộ nhớ và nghe offline.
+- **Nhật ký:** lịch sử sự kiện tải xuống có thời gian, nguồn, trạng thái và chi tiết.
+- **Tài khoản:** đăng nhập VOV Media trong WebView.
+
+Các tab đã mở được giữ trong composition để trạng thái giao diện và WebView không bị tạo lại khi chuyển tab. Trình phát nền hoạt động độc lập với việc chuyển tab.
+
+## Tính năng tải xuống
+
+### VOV Media
+
+- Dùng Media3 `DownloadManager` và `DownloadService`.
+- Hỗ trợ hàng đợi nhiều chương trình, tối đa 2 tác vụ tải song song.
+- Tạm dừng / tiếp tục toàn bộ hàng đợi, thử lại tác vụ lỗi, xóa bản tải.
+- Nghe HLS offline trong ứng dụng.
+- Có thể xuất bản tải sang M4A trong thư mục `Download/VOV Giao Thong+`.
+
+### VOV Nghe và xem lại
+
+- Hàng đợi được lưu bền vững trên thiết bị và xử lý tuần tự.
+- Hỗ trợ nhiều chương trình chờ tải, tạm dừng, tiếp tục, hủy và thử lại.
+- Có tiến độ tải; MP4 dùng byte đã tải/tổng byte nếu máy chủ cung cấp Content-Length.
+- Lưu file công khai vào `Download/VOV` và hỗ trợ mở/nghe file đã tải trong ứng dụng.
+- Tác vụ đang chạy được đưa lại vào hàng đợi nếu dịch vụ bị gián đoạn; quá trình tải sẽ bắt đầu lại từ đầu, không phải tiếp tục từ byte/segment đã tải trước đó.
+
+### Storage Manager và Nhật ký
+
+- Theo dõi dung lượng file công khai, file M4A đã xuất, cache HLS offline và dung lượng trống.
+- Có thao tác dọn các bản tải cũ hơn 30 ngày, kèm hộp thoại xác nhận.
+- Nhật ký ghi lại các sự kiện xếp hàng, bắt đầu, tạm dừng, tiếp tục, thử lại, hoàn tất, thất bại, hủy, xóa và dọn bộ nhớ.
+- Nhật ký lưu tối đa 1.000 sự kiện gần nhất trên thiết bị; xóa nhật ký không xóa file tải.
+
+## Các giới hạn cần biết
+
+1. **Đăng nhập VOV Media:** ứng dụng dùng WebView và CookieManager; không lưu mật khẩu. Việc xác nhận phiên trên giao diện không bảo đảm máy chủ cấp quyền tải. Quyền truy cập cuối cùng do VOV Media quyết định.
+2. **HLS công khai:** chỉ tải playlist đã kết thúc, không mã hóa và không dùng BYTERANGE. Luồng live hoặc nội dung được bảo vệ không được tải/giải mã.
+3. **Tạm dừng / tiếp tục:** VOV Media dùng cơ chế tải offline của Media3. VOV công khai tạm dừng an toàn theo chunk/segment; nếu tiến trình bị hệ điều hành kết thúc, tác vụ có thể phải tải lại từ đầu.
+4. **Tải nền:** Android có thể giới hạn foreground service theo phiên bản hệ điều hành, pin, mạng, force-stop hoặc chính sách hệ thống. Không có cam kết tải vô hạn khi người dùng force-stop ứng dụng.
+5. **Nguồn nội dung:** chỉ tải nội dung mà người dùng có quyền nghe/lưu và máy chủ cho phép. Ứng dụng không bypass DRM, paywall hoặc cơ chế xác thực.
+6. **Dữ liệu lịch:** lịch phát tĩnh có thể không phản ánh thay đổi mới nhất từ đài; cần kiểm tra với nguồn lịch chính thức khi cần độ chính xác thời gian thực.
 
 ## Công nghệ và cấu trúc
 
-- Kotlin 2.2.21, Android Gradle Plugin 8.11.1, Gradle 8.13, JDK 17, `compileSdk 36`, Android API 26+.
-- Jetpack Compose Material3 và Media3 1.11.1 (HLS / Session / Offline).
-- `app/src/main/assets/schedules.json`: lịch 7 ngày xuất tự động từ HTML.
-- `MainActivity.kt`: UI / tabs / lịch / login WebView / playback controller.
-- `Schedule.kt`: dữ liệu, timezone, URL và validate.
-- `OfflineStore.kt`: tải offline, cache, chia sẻ session cookies theo host.
-- `VovServices.kt`: audio service, DownloadService, scheduler, thông báo.
-- `.github/workflows/build-apk.yml`: build APK trên GitHub Ubuntu runner.
+- Kotlin 2.2.21, Android Gradle Plugin 8.11.1, Gradle 8.13, JDK 17.
+- `compileSdk 36`, `minSdk 26`, Jetpack Compose Material 3.
+- AndroidX Media3 1.11.1: ExoPlayer, HLS, MediaSession, DownloadManager, Transformer.
+- OkHttp 4.12.0.
+- `MainActivity.kt`: giao diện, 6 tab, trình phát, WebView đăng nhập và WebView VOV.
+- `OfflineStore.kt`: Media3 download index, cache, cookie jar.
+- `DownloadCenterStore.kt`: hàng đợi VOV công khai, nhật ký sự kiện, thống kê và dọn file.
+- `VovPublicDownloadService.kt`: foreground service xử lý tuần tự hàng đợi VOV công khai.
+- `VovPublicMediaDownloader.kt`: tải MP4/HLS công khai.
+- `VovServices.kt`: Application, Media3 DownloadService, scheduler và AudioService.
+- `AudioExportService.kt`: xuất bản tải HLS sang M4A.
 
-## Điều cần kiểm tra khi build và chạy
+## Kiểm thử trước khi phát hành
 
-- Workflow build xuất hiện dưới Actions; nếu chưa xuất hiện, kiểm tra `.github/workflows/build-apk.yml` đã được commit đúng thư mục.
-- Nếu GitHub Actions báo `Failed to find Platform SDK with path: platforms;android-36`, chạy lại workflow; file workflow đã có bước `sdkmanager`.
-- Bật quyền thông báo trên Android 13+ để thấy cập nhật tiến độ.
-- Vào Tài khoản → Đăng nhập → đăng nhập thật trên VOV Media → bấm Xác nhận → quay về Lịch phát và tải một chương trình **đã phát xong**.
-- Dùng tab Đã tải để kiểm tra trạng thái và nghe offline khi tải xong. Kiểm thử bằng cách tắt Wi-Fi/dữ liệu di động sau khi tải hoàn tất.
+- Nghe thử cả 4 kênh trực tiếp, khóa màn hình và chuyển tab.
+- Mở lịch phát, tạo link replay, thử nghe và tải một chương trình đã kết thúc.
+- Đăng nhập VOV Media bằng tài khoản hợp lệ và kiểm tra tải nội dung được cấp quyền.
+- Thêm nhiều nội dung VOV công khai vào hàng đợi; thử tạm dừng, tiếp tục, hủy và thử lại.
+- Tắt mạng trong khi tải, mở lại ứng dụng và kiểm tra trạng thái khôi phục.
+- Tắt Wi-Fi/dữ liệu di động để xác minh nghe offline.
+- Kiểm tra Nhật ký, Storage Manager và thao tác dọn file cũ trên thiết bị thật.
 
-**Trạng thái phân phối:** Repo mã nguồn đã chuẩn bị cho GitHub Actions; trong môi trường tạo dự án này không có Android SDK/Gradle và không có kết nối Internet từ container để chạy build. Vì vậy **chưa có APK được biên dịch/kiểm thử thực tế**. GitHub Actions sẽ thực hiện bước build; nếu có lỗi Gradle/API, cần kiểm tra log và hiệu chỉnh.
-
-**Tên ứng dụng:** `VOV Giao thông+` là tên bản dựng cá nhân theo yêu cầu, **không tuyên bố đây là ứng dụng chính thức của VOV**.
+**Tên ứng dụng:** VOV Giao thông+ là tên ứng dụng Android độc lập; repository này không tuyên bố là ứng dụng chính thức của VOV.
