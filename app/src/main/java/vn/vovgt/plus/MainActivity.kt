@@ -53,7 +53,9 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.exoplayer.offline.Download
 import com.google.common.util.concurrent.ListenableFuture
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -631,7 +633,7 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
     val context = LocalContext.current
     var mediaDownloads by remember { mutableStateOf<List<Download>>(emptyList()) }
     var publicTasks by remember { mutableStateOf(DownloadCenterStore.tasks(context)) }
-    var storage by remember { mutableStateOf(DownloadCenterStore.storage(context)) }
+    var storage by remember { mutableStateOf(DownloadCenterStore.StorageSnapshot(0, 0L, 0L, 0L)) }
     var lastQueueStartAttempt by remember { mutableStateOf(0L) }
 
     DisposableEffect(Unit) {
@@ -650,6 +652,8 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
 
     LaunchedEffect(active) {
         if (!active) return@LaunchedEffect
+        storage = withContext(Dispatchers.IO) { DownloadCenterStore.storage(context) }
+        var lastStorageRefresh = System.currentTimeMillis()
         val queued = DownloadCenterStore.tasks(context).any { it.status == "queued" }
         if (queued) {
             try {
@@ -664,8 +668,11 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
                 mediaDownloads = OfflineStore.downloads()
                 val queueSnapshot = DownloadCenterStore.tasks(context)
                 publicTasks = queueSnapshot
-                storage = DownloadCenterStore.storage(context)
                 val now = System.currentTimeMillis()
+                if (now - lastStorageRefresh >= 10_000L) {
+                    storage = withContext(Dispatchers.IO) { DownloadCenterStore.storage(context) }
+                    lastStorageRefresh = now
+                }
                 if (queueSnapshot.any { it.status == "queued" } &&
                     queueSnapshot.none { it.status == "running" || it.status == "paused" } &&
                     now - lastQueueStartAttempt > 5_000L
@@ -722,13 +729,6 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
                             Text(formatDownloadBytes(storage.cacheBytes), fontWeight = FontWeight.SemiBold)
                         }
                     }
-                    LinearProgressIndicator(
-                        progress = {
-                            val used = storage.publicBytes + storage.cacheBytes
-                            if (storage.freeBytes + used > 0L) (used.toFloat() / (storage.freeBytes + used).toFloat()).coerceIn(0f, 1f) else 0f
-                        },
-                        modifier = Modifier.fillMaxWidth().height(6.dp)
-                    )
                     Text("Bộ nhớ còn trống: ${formatDownloadBytes(storage.freeBytes)}", fontSize = 11.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                     OutlinedButton(
