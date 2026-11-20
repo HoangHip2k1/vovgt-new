@@ -960,8 +960,14 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
                         }) { Icon(Icons.Default.Refresh, null); Text("Thử lại") }
                     }
                     Spacer(Modifier.weight(1f))
-                    TextButton(onClick = { OfflineStore.remove(context, d.request.id); report("Đã yêu cầu xóa bản tải") }) {
-                        Icon(Icons.Default.DeleteOutline, null, Modifier.size(18.dp)); Text("Xóa")
+                    val activeDownload = d.state == Download.STATE_DOWNLOADING ||
+                        d.state == Download.STATE_QUEUED || d.state == Download.STATE_RESTARTING
+                    TextButton(onClick = {
+                        OfflineStore.remove(context, d.request.id)
+                        report(if (activeDownload) "Đã hủy tác vụ tải" else "Đã yêu cầu xóa bản tải")
+                    }) {
+                        Icon(if (activeDownload) Icons.Default.Close else Icons.Default.DeleteOutline, null, Modifier.size(18.dp))
+                        Text(if (activeDownload) "Hủy" else "Xóa")
                     }
                 }
             }
