@@ -168,11 +168,14 @@ class VovPublicDownloadService : Service() {
                 }
                 throw cancelled
             } catch (error: Exception) {
-                val detail = "Tải VOV thất bại: ${error.message ?: "Lỗi không xác định"}"
-                DownloadCenterStore.update(applicationContext, task.id, status = "failed", detail = detail, progress = -1f)
-                DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "failed", detail)
-                VovPublicDownloadState.failed(applicationContext, task.title, detail)
-                updateNotification(detail, ongoing = false, failed = true)
+                val latest = DownloadCenterStore.tasks(applicationContext).firstOrNull { it.id == task.id }
+                if (latest?.status != "cancelled" && !shuttingDown) {
+                    val detail = "Tải VOV thất bại: ${error.message ?: "Lỗi không xác định"}"
+                    DownloadCenterStore.update(applicationContext, task.id, status = "failed", detail = detail, progress = -1f)
+                    DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "failed", detail)
+                    VovPublicDownloadState.failed(applicationContext, task.title, detail)
+                    updateNotification(detail, ongoing = false, failed = true)
+                }
             } finally {
                 mainHandler.post {
                     // A newly enqueued task may already have started while this cancelled job was unwinding.
