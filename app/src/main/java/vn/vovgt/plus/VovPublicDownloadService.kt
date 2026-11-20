@@ -82,6 +82,7 @@ class VovPublicDownloadService : Service() {
             ACTION_CANCEL -> {
                 val id = intent.getStringExtra(EXTRA_TASK_ID).orEmpty()
                 cancelTask(id)
+                if (downloadJob?.isCompleted != false) startNext(startId)
                 return START_NOT_STICKY
             }
             ACTION_RETRY -> {
