@@ -1,0 +1,62 @@
+name: Build VOVGT Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout new repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Only import the original project during an explicitly marked bootstrap run.
+      # Normal code changes must never overwrite the new VOV tab or downloader work.
+      - name: Copy the original Android project
+        if: contains(github.event.head_commit.message, '[vovgt-bootstrap]')
+        shell: bash
+        run: |
+          git clone --depth 1 https://github.com/HoangHip2k1/vovgiaothong.git /tmp/vovgiaothong
+          rsync -a --exclude='.git' --exclude='.github/workflows' /tmp/vovgiaothong/ ./
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "Import original VOV Giao Thong+ Android source"
+            git push origin HEAD:main
+          fi
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android SDK 36
+        run: sdkmanager --install 'platforms;android-36' 'build-tools;36.0.0'
+
+      - name: Set up Gradle 8.13
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+
+      - name: Build debug APK
+        run: gradle --no-daemon :app:assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: VOV-GT-Android-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
