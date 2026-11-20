@@ -805,10 +805,14 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
                     }
                 }
                 if (task.status == "running" || task.status == "paused") {
-                    LinearProgressIndicator(
-                        progress = { task.progress.coerceAtLeast(0f).coerceAtMost(1f) },
-                        modifier = Modifier.fillMaxWidth().height(6.dp)
-                    )
+                    if (task.progress >= 0f) {
+                        LinearProgressIndicator(
+                            progress = { task.progress.coerceAtMost(1f) },
+                            modifier = Modifier.fillMaxWidth().height(6.dp)
+                        )
+                    } else {
+                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth().height(6.dp))
+                    }
                 }
                 if (task.detail.isNotBlank()) {
                     Text(task.detail, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
