@@ -1070,6 +1070,8 @@ private fun JournalScreen(active: Boolean) {
                 "retry" -> "Thử tải lại"
                 "retrying" -> "Đang thử lại"
                 "removing" -> "Đang xóa"
+                "removed" -> "Đã xóa bản tải"
+                "cleanup" -> "Dọn dẹp bộ nhớ"
                 else -> entry.action
             }
             val tint = when (entry.action) {
