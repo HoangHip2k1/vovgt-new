@@ -144,7 +144,6 @@ class VovPublicDownloadService : Service() {
 
     private fun runTask(task: DownloadCenterStore.PublicTask, startId: Int) {
         currentTaskId = task.id
-        VovPublicDownloadControl.resume()
         VovPublicDownloadState.started(applicationContext, task.title)
         DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "started", "Bắt đầu tải nội dung")
         downloadJob = serviceScope.launch {
