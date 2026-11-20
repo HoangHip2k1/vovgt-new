@@ -20,15 +20,43 @@ import androidx.media3.exoplayer.scheduler.PlatformScheduler
 import androidx.media3.exoplayer.scheduler.Scheduler
 
 class VovApplication : android.app.Application() {
+    private val journaledStates = java.util.concurrent.ConcurrentHashMap<String, Int>()
+
     override fun onCreate() {
         super.onCreate()
         OfflineStore.init(this)
+        DownloadCenterStore.recoverInterrupted(this)
         val notifications = getSystemService(NotificationManager::class.java)
         notifications.createNotificationChannel(
             NotificationChannel("vov_status", "Kết quả tải xuống", NotificationManager.IMPORTANCE_DEFAULT)
         )
+        OfflineStore.downloads().forEach { journaledStates[it.request.id] = it.state }
         OfflineStore.manager.addListener(object : DownloadManager.Listener {
             override fun onDownloadChanged(manager: DownloadManager, download: Download, finalException: Exception?) {
+                val previousState = journaledStates.put(download.request.id, download.state)
+                if (previousState != download.state) {
+                    val action = when (download.state) {
+                        Download.STATE_QUEUED -> "queued"
+                        Download.STATE_DOWNLOADING -> "started"
+                        Download.STATE_COMPLETED -> "completed"
+                        Download.STATE_FAILED -> "failed"
+                        Download.STATE_STOPPED -> "paused"
+                        Download.STATE_REMOVING -> "removing"
+                        Download.STATE_RESTARTING -> "retrying"
+                        else -> "updated"
+                    }
+                    val detail = when (download.state) {
+                        Download.STATE_QUEUED -> "Đã đưa vào hàng đợi"
+                        Download.STATE_DOWNLOADING -> "Bắt đầu tải nội dung"
+                        Download.STATE_COMPLETED -> "Tải hoàn tất"
+                        Download.STATE_FAILED -> finalException?.message ?: "Tải thất bại"
+                        Download.STATE_STOPPED -> "Tác vụ đã tạm dừng"
+                        Download.STATE_REMOVING -> "Đang xóa dữ liệu tải"
+                        Download.STATE_RESTARTING -> "Đang khởi động lại tác vụ"
+                        else -> "Trạng thái tải thay đổi"
+                    }
+                    DownloadCenterStore.record(this@VovApplication, "VOV Media", OfflineStore.title(download), action, detail)
+                }
                 if (download.state == Download.STATE_COMPLETED) {
                     AudioExportState.request(this@VovApplication, download)
                 }
