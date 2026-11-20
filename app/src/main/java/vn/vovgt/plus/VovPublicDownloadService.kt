@@ -173,13 +173,16 @@ class VovPublicDownloadService : Service() {
                 updateNotification(detail, ongoing = false, failed = true)
             } finally {
                 mainHandler.post {
-                    downloadJob = null
-                    currentTaskId = null
-                    val next = DownloadCenterStore.nextQueued(applicationContext)
-                    if (next != null) runTask(next, lastStartId)
-                    else {
-                        stopForeground(STOP_FOREGROUND_REMOVE)
-                        stopSelf(lastStartId)
+                    // A newly enqueued task may already have started while this cancelled job was unwinding.
+                    if (currentTaskId == task.id) {
+                        downloadJob = null
+                        currentTaskId = null
+                        val next = DownloadCenterStore.nextQueued(applicationContext)
+                        if (next != null) runTask(next, lastStartId)
+                        else {
+                            stopForeground(STOP_FOREGROUND_REMOVE)
+                            stopSelf(lastStartId)
+                        }
                     }
                 }
             }
