@@ -8,6 +8,7 @@ import androidx.media3.common.MimeTypes
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.NoOpCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
@@ -53,7 +54,9 @@ object OfflineStore {
         .setUserAgent("VOV-Giao-Thong-Plus/1.0 (Android)")
     fun playbackFactory(): CacheDataSource.Factory = CacheDataSource.Factory()
         .setCache(cache)
-        .setUpstreamDataSourceFactory(upstream())
+        // DefaultDataSource supports content:// and file:// for downloaded public media,
+        // while delegating HTTPS requests to the existing OkHttp source.
+        .setUpstreamDataSourceFactory(DefaultDataSource.Factory(app, upstream()))
         .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
 
     val manager: DownloadManager by lazy {
