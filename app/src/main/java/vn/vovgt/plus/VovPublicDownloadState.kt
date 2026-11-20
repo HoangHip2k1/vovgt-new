@@ -1,91 +1,123 @@
-cGFja2FnZSB2bi52b3ZndC5wbHVzCgppbXBvcnQgYW5kcm9pZC5jb250ZW50
-LkNvbnRleHQKCi8qKgogKiBTbWFsbCBwZXJzaXN0ZW50IHN0YXR1cyBicmlk
-Z2UgYmV0d2VlbiB0aGUgVk9WIHB1YmxpYy1kb3dubG9hZCBzZXJ2aWNlCiAq
-IGFuZCB0aGUgc2hhcmVkIGRvd25sb2FkLWhpc3Rvcnkgc2NyZWVuLiBEb2Vz
-IG5vdCBzdG9yZSBWT1YgTWVkaWEgY3JlZGVudGlhbHMuCiAqLwppbnRlcm5h
-bCBvYmplY3QgVm92UHVibGljRG93bmxvYWRTdGF0ZSB7CiAgICBwcml2YXRl
-IGNvbnN0IHZhbCBQUkVGUyA9ICJ2b3ZfcHVibGljX2Rvd25sb2FkX3N0YXRl
-IgogICAgcHJpdmF0ZSBjb25zdCB2YWwgS0VZX0FDVElWRSA9ICJhY3RpdmUi
-CiAgICBwcml2YXRlIGNvbnN0IHZhbCBLRVlfVElUTEUgPSAidGl0bGUiCiAg
-ICBwcml2YXRlIGNvbnN0IHZhbCBLRVlfU1RBVFVTID0gInN0YXR1cyIKICAg
-IHByaXZhdGUgY29uc3QgdmFsIEtFWV9ERVRBSUwgPSAiZGV0YWlsIgogICAg
-cHJpdmF0ZSBjb25zdCB2YWwgS0VZX1BST0dSRVNTID0gInByb2dyZXNzIgog
-ICAgcHJpdmF0ZSBjb25zdCB2YWwgS0VZX1VQREFURUQgPSAidXBkYXRlZCIK
-CiAgICBkYXRhIGNsYXNzIFNuYXBzaG90KAogICAgICAgIHZhbCBhY3RpdmU6
-IEJvb2xlYW4sCiAgICAgICAgdmFsIHRpdGxlOiBTdHJpbmcsCiAgICAgICAg
-dmFsIHN0YXR1czogU3RyaW5nLAogICAgICAgIHZhbCBkZXRhaWw6IFN0cmlu
-ZywKICAgICAgICB2YWwgcHJvZ3Jlc3M6IEZsb2F0LAogICAgICAgIHZhbCB1
-cGRhdGVkQXQ6IExvbmcKICAgICkKCiAgICBmdW4gcmVhZChjb250ZXh0OiBD
-b250ZXh0KTogU25hcHNob3QgewogICAgICAgIHZhbCBwID0gY29udGV4dC5n
-ZXRTaGFyZWRQcmVmZXJlbmNlcyhQUkVGUywgQ29udGV4dC5NT0RFX1BSSVZB
-VEUpCiAgICAgICAgcmV0dXJuIFNuYXBzaG90KAogICAgICAgICAgICBhY3Rp
-dmUgPSBwLmdldEJvb2xlYW4oS0VZX0FDVElWRSwgZmFsc2UpLAogICAgICAg
-ICAgICB0aXRsZSA9IHAuZ2V0U3RyaW5nKEtFWV9USVRMRSwgIk7hu5lpIGR1
-bmcgVk9WIikgPzogIk7hu5lpIGR1bmcgVk9WIiwKICAgICAgICAgICAgc3Rh
-dHVzID0gcC5nZXRTdHJpbmcoS0VZX1NUQVRVUywgImlkbGUiKSA/OiAiaWRs
-ZSIsCiAgICAgICAgICAgIGRldGFpbCA9IHAuZ2V0U3RyaW5nKEtFWV9ERVRB
-SUwsICIiKSA/OiAiIiwKICAgICAgICAgICAgcHJvZ3Jlc3MgPSBwLmdldEZs
-b2F0KEtFWV9QUk9HUkVTUywgLTFmKSwKICAgICAgICAgICAgdXBkYXRlZEF0
-ID0gcC5nZXRMb25nKEtFWV9VUERBVEVELCAwTCkKICAgICAgICApCiAgICB9
-CgogICAgZnVuIHN0YXJ0ZWQoY29udGV4dDogQ29udGV4dCwgdGl0bGU6IFN0
-cmluZykgewogICAgICAgIHdyaXRlKGNvbnRleHQsIHRydWUsIHRpdGxlLCAi
-cnVubmluZyIsICLEkGFuZyBjaHXhuqluIGLhu4sgdOG6o2nigKYiLCAtMWYp
-CiAgICB9CgogICAgZnVuIHByb2dyZXNzKGNvbnRleHQ6IENvbnRleHQsIHRp
-dGxlOiBTdHJpbmcsIGRldGFpbDogU3RyaW5nKSB7CiAgICAgICAgdmFsIGZy
-YWN0aW9uID0gUmVnZXgoIiIiKFxkKylccyovXHMqKFxkKykiIiIpLmZpbmQo
-ZGV0YWlsKT8ubGV0IHsKICAgICAgICAgICAgdmFsIGN1cnJlbnQgPSBpdC5n
-cm91cFZhbHVlc1sxXS50b0Zsb2F0T3JOdWxsKCkgPzogMGYKICAgICAgICAg
-ICAgdmFsIHRvdGFsID0gaXQuZ3JvdXBWYWx1ZXNbMl0udG9GbG9hdE9yTnVs
-bCgpID86IDBmCiAgICAgICAgICAgIGlmICh0b3RhbCA+IDBmKSAoY3VycmVu
-dCAvIHRvdGFsKS5jb2VyY2VJbigwZiwgMC45OWYpIGVsc2UgLTFmCiAgICAg
-ICAgfSA/OiAtMWYKICAgICAgICB3cml0ZShjb250ZXh0LCB0cnVlLCB0aXRs
-ZSwgInJ1bm5pbmciLCBkZXRhaWwsIGZyYWN0aW9uKQogICAgfQoKCiAgICBm
-dW4gcGF1c2VkKGNvbnRleHQ6IENvbnRleHQsIHRpdGxlOiBTdHJpbmcpIHsK
-ICAgICAgICB2YWwgY3VycmVudCA9IHJlYWQoY29udGV4dCkKICAgICAgICB3
-cml0ZShjb250ZXh0LCB0cnVlLCB0aXRsZSwgInBhdXNlZCIsIGN1cnJlbnQu
-ZGV0YWlsLmlmQmxhbmsgeyAixJDDoyB04bqhbSBk4burbmciIH0sIGN1cnJl
-bnQucHJvZ3Jlc3MpCiAgICB9CgogICAgZnVuIHJlc3VtZWQoY29udGV4dDog
-Q29udGV4dCwgdGl0bGU6IFN0cmluZykgewogICAgICAgIHZhbCBjdXJyZW50
-ID0gcmVhZChjb250ZXh0KQogICAgICAgIHdyaXRlKGNvbnRleHQsIHRydWUs
-IHRpdGxlLCAicnVubmluZyIsIGN1cnJlbnQuZGV0YWlsLmlmQmxhbmsgeyAi
-xJBhbmcgdGnhur9wIHThu6VjIHThuqNp4oCmIiB9LCBjdXJyZW50LnByb2dy
-ZXNzKQogICAgfQoKICAgIGZ1biBjb21wbGV0ZWQoY29udGV4dDogQ29udGV4
-dCwgdGl0bGU6IFN0cmluZywgZGV0YWlsOiBTdHJpbmcpIHsKICAgICAgICB3
-cml0ZShjb250ZXh0LCBmYWxzZSwgdGl0bGUsICJjb21wbGV0ZWQiLCBkZXRh
-aWwsIDFmKQogICAgfQoKICAgIGZ1biBmYWlsZWQoY29udGV4dDogQ29udGV4
-dCwgdGl0bGU6IFN0cmluZywgZGV0YWlsOiBTdHJpbmcpIHsKICAgICAgICB3
-cml0ZShjb250ZXh0LCBmYWxzZSwgdGl0bGUsICJmYWlsZWQiLCBkZXRhaWws
-IC0xZikKICAgIH0KCiAgICBmdW4gY2xlYXIoY29udGV4dDogQ29udGV4dCkg
-ewogICAgICAgIGNvbnRleHQuZ2V0U2hhcmVkUHJlZmVyZW5jZXMoUFJFRlMs
-IENvbnRleHQuTU9ERV9QUklWQVRFKS5lZGl0KCkuY2xlYXIoKS5hcHBseSgp
-CiAgICB9CgogICAgcHJpdmF0ZSBmdW4gd3JpdGUoCiAgICAgICAgY29udGV4
-dDogQ29udGV4dCwKICAgICAgICBhY3RpdmU6IEJvb2xlYW4sCiAgICAgICAg
-dGl0bGU6IFN0cmluZywKICAgICAgICBzdGF0dXM6IFN0cmluZywKICAgICAg
-ICBkZXRhaWw6IFN0cmluZywKICAgICAgICBwcm9ncmVzczogRmxvYXQKICAg
-ICkgewogICAgICAgIGNvbnRleHQuZ2V0U2hhcmVkUHJlZmVyZW5jZXMoUFJF
-RlMsIENvbnRleHQuTU9ERV9QUklWQVRFKS5lZGl0KCkKICAgICAgICAgICAg
-LnB1dEJvb2xlYW4oS0VZX0FDVElWRSwgYWN0aXZlKQogICAgICAgICAgICAu
-cHV0U3RyaW5nKEtFWV9USVRMRSwgdGl0bGUpCiAgICAgICAgICAgIC5wdXRT
-dHJpbmcoS0VZX1NUQVRVUywgc3RhdHVzKQogICAgICAgICAgICAucHV0U3Ry
-aW5nKEtFWV9ERVRBSUwsIGRldGFpbCkKICAgICAgICAgICAgLnB1dEZsb2F0
-KEtFWV9QUk9HUkVTUywgcHJvZ3Jlc3MpCiAgICAgICAgICAgIC5wdXRMb25n
-KEtFWV9VUERBVEVELCBTeXN0ZW0uY3VycmVudFRpbWVNaWxsaXMoKSkKICAg
-ICAgICAgICAgLmFwcGx5KCkKICAgIH0KfQoKCi8qKiBQYXVzZSBnYXRlIHNo
-YXJlZCBieSB0aGUgVk9WIHB1YmxpYyBkb3dubG9hZGVyIGFuZCBpdHMgZm9y
-ZWdyb3VuZCBzZXJ2aWNlLiAqLwppbnRlcm5hbCBvYmplY3QgVm92UHVibGlj
-RG93bmxvYWRDb250cm9sIHsKICAgIHByaXZhdGUgdmFsIG1vbml0b3IgPSBq
-YXZhLmxhbmcuT2JqZWN0KCkKICAgIEBWb2xhdGlsZSBwcml2YXRlIHZhciBw
-YXVzZWQgPSBmYWxzZQoKICAgIGZ1biBwYXVzZSgpIHsKICAgICAgICBzeW5j
-aHJvbml6ZWQobW9uaXRvcikgeyBwYXVzZWQgPSB0cnVlIH0KICAgIH0KCiAg
-ICBmdW4gcmVzdW1lKCkgewogICAgICAgIHN5bmNocm9uaXplZChtb25pdG9y
-KSB7CiAgICAgICAgICAgIHBhdXNlZCA9IGZhbHNlCiAgICAgICAgICAgIG1v
-bml0b3Iubm90aWZ5QWxsKCkKICAgICAgICB9CiAgICB9CgogICAgZnVuIGF3
-YWl0SWZQYXVzZWQoKSB7CiAgICAgICAgc3luY2hyb25pemVkKG1vbml0b3Ip
-IHsKICAgICAgICAgICAgd2hpbGUgKHBhdXNlZCkgewogICAgICAgICAgICAg
-ICAgdHJ5IHsKICAgICAgICAgICAgICAgICAgICBtb25pdG9yLndhaXQoKQog
-ICAgICAgICAgICAgICAgfSBjYXRjaCAoaW50ZXJydXB0ZWQ6IEludGVycnVw
-dGVkRXhjZXB0aW9uKSB7CiAgICAgICAgICAgICAgICAgICAgVGhyZWFkLmN1
-cnJlbnRUaHJlYWQoKS5pbnRlcnJ1cHQoKQogICAgICAgICAgICAgICAgICAg
-IHRocm93IGtvdGxpbnguY29yb3V0aW5lcy5DYW5jZWxsYXRpb25FeGNlcHRp
-b24oIlZPViBkb3dubG9hZCBpbnRlcnJ1cHRlZCIpCiAgICAgICAgICAgICAg
-ICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9Cn0K
+package vn.vovgt.plus
+
+import android.content.Context
+
+/**
+ * Small persistent status bridge between the VOV public-download service
+ * and the shared download-history screen. Does not store VOV Media credentials.
+ */
+internal object VovPublicDownloadState {
+    private const val PREFS = "vov_public_download_state"
+    private const val KEY_ACTIVE = "active"
+    private const val KEY_TITLE = "title"
+    private const val KEY_STATUS = "status"
+    private const val KEY_DETAIL = "detail"
+    private const val KEY_PROGRESS = "progress"
+    private const val KEY_UPDATED = "updated"
+
+    data class Snapshot(
+        val active: Boolean,
+        val title: String,
+        val status: String,
+        val detail: String,
+        val progress: Float,
+        val updatedAt: Long
+    )
+
+    fun read(context: Context): Snapshot {
+        val p = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        return Snapshot(
+            active = p.getBoolean(KEY_ACTIVE, false),
+            title = p.getString(KEY_TITLE, "Nội dung VOV") ?: "Nội dung VOV",
+            status = p.getString(KEY_STATUS, "idle") ?: "idle",
+            detail = p.getString(KEY_DETAIL, "") ?: "",
+            progress = p.getFloat(KEY_PROGRESS, -1f),
+            updatedAt = p.getLong(KEY_UPDATED, 0L)
+        )
+    }
+
+    fun started(context: Context, title: String) {
+        write(context, true, title, "running", "Đang chuẩn bị tải…", -1f)
+    }
+
+    fun progress(context: Context, title: String, detail: String) {
+        val fraction = Regex("""(\d+)\s*/\s*(\d+)""").find(detail)?.let {
+            val current = it.groupValues[1].toFloatOrNull() ?: 0f
+            val total = it.groupValues[2].toFloatOrNull() ?: 0f
+            if (total > 0f) (current / total).coerceIn(0f, 0.99f) else -1f
+        } ?: -1f
+        write(context, true, title, "running", detail, fraction)
+    }
+
+
+    fun paused(context: Context, title: String) {
+        val current = read(context)
+        write(context, true, title, "paused", current.detail.ifBlank { "Đã tạm dừng" }, current.progress)
+    }
+
+    fun resumed(context: Context, title: String) {
+        val current = read(context)
+        write(context, true, title, "running", current.detail.ifBlank { "Đang tiếp tục tải…" }, current.progress)
+    }
+
+    fun completed(context: Context, title: String, detail: String) {
+        write(context, false, title, "completed", detail, 1f)
+    }
+
+    fun failed(context: Context, title: String, detail: String) {
+        write(context, false, title, "failed", detail, -1f)
+    }
+
+    fun clear(context: Context) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().clear().apply()
+    }
+
+    private fun write(
+        context: Context,
+        active: Boolean,
+        title: String,
+        status: String,
+        detail: String,
+        progress: Float
+    ) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+            .putBoolean(KEY_ACTIVE, active)
+            .putString(KEY_TITLE, title)
+            .putString(KEY_STATUS, status)
+            .putString(KEY_DETAIL, detail)
+            .putFloat(KEY_PROGRESS, progress)
+            .putLong(KEY_UPDATED, System.currentTimeMillis())
+            .apply()
+    }
+}
+
+
+/** Pause gate shared by the VOV public downloader and its foreground service. */
+internal object VovPublicDownloadControl {
+    private val monitor = java.lang.Object()
+    @Volatile private var paused = false
+
+    fun pause() {
+        synchronized(monitor) { paused = true }
+    }
+
+    fun resume() {
+        synchronized(monitor) {
+            paused = false
+            monitor.notifyAll()
+        }
+    }
+
+    fun awaitIfPaused() {
+        synchronized(monitor) {
+            while (paused) {
+                try {
+                    monitor.wait()
+                } catch (interrupted: InterruptedException) {
+                    Thread.currentThread().interrupt()
+                    throw kotlinx.coroutines.CancellationException("VOV download interrupted")
+                }
+            }
+        }
+    }
+}
