@@ -39,6 +39,7 @@ internal object VovPublicMediaDownloader {
     }
 
     private inline fun <T> withResponse(request: Request, block: (okhttp3.Response) -> T): T {
+        VovPublicDownloadControl.awaitIfPaused()
         ensureNotCancelled()
         val call = client.newCall(request)
         activeCall = call
