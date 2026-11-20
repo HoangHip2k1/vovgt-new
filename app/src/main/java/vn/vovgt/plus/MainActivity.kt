@@ -698,7 +698,7 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
                     }
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Column {
-                            Text("VOV Archive", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("Tệp đã tải công khai", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text(formatDownloadBytes(storage.publicBytes), fontWeight = FontWeight.SemiBold)
                         }
                         Column(horizontalAlignment = Alignment.End) {
@@ -727,6 +727,10 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
                                 it.status == "completed" && it.updatedAt in 1 until cutoff
                             }
                             oldTasks.forEach { DownloadCenterStore.removeTask(context, it.id) }
+                            DownloadCenterStore.record(
+                                context, "Storage Manager", "Dọn dẹp bộ nhớ", "cleanup",
+                                "Đã xóa ${oldMedia.size + removedFiles} tệp/nội dung cũ hơn 30 ngày"
+                            )
                             report("Đã yêu cầu dọn ${oldMedia.size + removedFiles} nội dung cũ hơn 30 ngày")
                         },
                         modifier = Modifier.fillMaxWidth()
