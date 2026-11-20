@@ -104,6 +104,11 @@ private fun VovPlusApp(player: MediaController?) {
     var dark by remember { mutableStateOf(prefs.getBoolean("dark", false)) }
     var confirmedSession by remember { mutableStateOf(prefs.getBoolean("session_confirmed", false)) }
     var selectedTab by remember { mutableStateOf(Tab.SCHEDULE) }
+    var visitedTabs by remember { mutableStateOf(setOf(Tab.SCHEDULE)) }
+    val selectTab: (Tab) -> Unit = { tab ->
+        visitedTabs = visitedTabs + tab
+        selectedTab = tab
+    }
     var pending by remember { mutableStateOf<QueuedMedia?>(null) }
     val scope = rememberCoroutineScope()
     val snackbar = remember { SnackbarHostState() }
@@ -114,12 +119,12 @@ private fun VovPlusApp(player: MediaController?) {
             VovData.isLive(url) -> report("Kênh trực tiếp chỉ hỗ trợ nghe. Hãy tải chương trình phát lại.")
             !confirmedSession -> {
                 pending = QueuedMedia(url, title)
-                selectedTab = Tab.ACCOUNT
+                selectTab(Tab.ACCOUNT)
                 report("Hãy đăng nhập VOV Media trước khi tải.")
             }
             else -> try {
                 OfflineStore.enqueue(context, url, title)
-                selectedTab = Tab.DOWNLOADS
+                selectTab(Tab.DOWNLOADS)
                 report("Đã thêm vào danh sách tải. Bạn có thể thoát màn hình ứng dụng.")
             } catch (ex: Exception) { report(ex.message ?: "Không thể bắt đầu tải") }
         }
@@ -190,7 +195,7 @@ private fun VovPlusApp(player: MediaController?) {
                             Tab.ACCOUNT -> Icons.Default.PersonOutline
                         }
                         NavigationBarItem(
-                            selected = selectedTab == tab, onClick = { selectedTab = tab },
+                            selected = selectedTab == tab, onClick = { selectTab(tab) },
                             icon = { Icon(icon, contentDescription = null) },
                             label = { Text(tab.label, fontSize = 11.sp) }
                         )
@@ -200,7 +205,9 @@ private fun VovPlusApp(player: MediaController?) {
         ) { insets ->
             Column(Modifier.fillMaxSize().padding(insets)) {
                 Box(Modifier.weight(1f)) {
-                    when (selectedTab) {
+                    Tab.entries.filter { it in visitedTabs }.forEach { tab ->
+                        Box(Modifier.then(if (selectedTab == tab) Modifier.fillMaxSize() else Modifier.size(0.dp))) {
+                            when (tab) {
                         Tab.SCHEDULE -> ScheduleScreen(
                             onListen = listen, onDownload = download, report = report,
                             onCopy = { url ->
@@ -210,8 +217,8 @@ private fun VovPlusApp(player: MediaController?) {
                             }
                         )
                         Tab.LIVE -> LiveScreen(onListen = listen)
-                        Tab.DOWNLOADS -> DownloadsScreen(onListen = listen, report = report)
-                        Tab.JOURNAL -> JournalScreen()
+                        Tab.DOWNLOADS -> DownloadsScreen(onListen = listen, report = report, active = selectedTab == tab)
+                        Tab.JOURNAL -> JournalScreen(active = selectedTab == tab)
                         Tab.VOV -> VovArchiveBrowserScreen(report = report)
                         Tab.ACCOUNT -> AccountScreen(
                             confirmed = confirmedSession,
@@ -232,6 +239,8 @@ private fun VovPlusApp(player: MediaController?) {
                                 report("Đã xóa phiên đăng nhập trên thiết bị")
                             }, report = report
                         )
+                            }
+                        }
                     }
                 }
                 if (player != null) PlayerStrip(player)
@@ -618,7 +627,7 @@ private fun LiveScreen(onListen: (String, String) -> Unit) {
 }
 
 @Composable
-private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String) -> Unit) {
+private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String) -> Unit, active: Boolean) {
     val context = LocalContext.current
     var mediaDownloads by remember { mutableStateOf<List<Download>>(emptyList()) }
     var publicTasks by remember { mutableStateOf(DownloadCenterStore.tasks(context)) }
@@ -638,7 +647,8 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
         onDispose { manager.removeListener(listener) }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(active) {
+        if (!active) return@LaunchedEffect
         val queued = DownloadCenterStore.tasks(context).any { it.status == "queued" }
         if (queued) {
             try {
@@ -956,13 +966,14 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
 }
 
 @Composable
-private fun JournalScreen() {
+private fun JournalScreen(active: Boolean) {
     val context = LocalContext.current
     var entries by remember { mutableStateOf(DownloadCenterStore.journal(context)) }
     var filter by remember { mutableStateOf("all") }
     var confirmClear by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(active) {
+        if (!active) return@LaunchedEffect
         while (true) {
             entries = DownloadCenterStore.journal(context)
             delay(1200)
