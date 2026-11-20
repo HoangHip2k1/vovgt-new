@@ -252,12 +252,15 @@ internal object DownloadCenterStore {
                 MediaStore.MediaColumns._ID,
                 MediaStore.MediaColumns.SIZE
             )
-            val selection = "${MediaStore.MediaColumns.RELATIVE_PATH} = ? AND ${MediaStore.MediaColumns.IS_PENDING} = 0"
+            val selection = "(${MediaStore.MediaColumns.RELATIVE_PATH} = ? OR ${MediaStore.MediaColumns.RELATIVE_PATH} = ?) AND ${MediaStore.MediaColumns.IS_PENDING} = 0"
             context.contentResolver.query(
                 MediaStore.Downloads.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,
-                arrayOf(Environment.DIRECTORY_DOWNLOADS + "/VOV/"),
+                arrayOf(
+                    Environment.DIRECTORY_DOWNLOADS + "/VOV/",
+                    Environment.DIRECTORY_DOWNLOADS + "/VOV Giao Thong+/"
+                ),
                 null
             )?.use { cursor ->
                 val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
@@ -267,10 +270,12 @@ internal object DownloadCenterStore {
                 }
             }
         } else {
-            val dir = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "VOV")
-            dir.walkTopDown().filter { it.isFile }.forEach {
-                count++
-                publicBytes += it.length()
+            val base = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: context.filesDir
+            listOf(File(base, "VOV"), File(base, "VOV Giao Thong+")).forEach { dir ->
+                dir.walkTopDown().filter { it.isFile }.forEach {
+                    count++
+                    publicBytes += it.length()
+                }
             }
         }
         val cacheDir = File(context.filesDir, "vov-offline-cache")
@@ -288,13 +293,17 @@ internal object DownloadCenterStore {
         var deleted = 0
         if (Build.VERSION.SDK_INT >= 29) {
             val projection = arrayOf(MediaStore.MediaColumns._ID)
-            val selection = "${MediaStore.MediaColumns.RELATIVE_PATH} = ? AND ${MediaStore.MediaColumns.DATE_MODIFIED} < ?"
+            val selection = "(${MediaStore.MediaColumns.RELATIVE_PATH} = ? OR ${MediaStore.MediaColumns.RELATIVE_PATH} = ?) AND ${MediaStore.MediaColumns.DATE_MODIFIED} < ?"
             val ids = mutableListOf<Long>()
             context.contentResolver.query(
                 MediaStore.Downloads.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,
-                arrayOf(Environment.DIRECTORY_DOWNLOADS + "/VOV/", cutoffSeconds.toString()),
+                arrayOf(
+                    Environment.DIRECTORY_DOWNLOADS + "/VOV/",
+                    Environment.DIRECTORY_DOWNLOADS + "/VOV Giao Thong+/",
+                    cutoffSeconds.toString()
+                ),
                 null
             )?.use { cursor ->
                 val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
@@ -305,9 +314,11 @@ internal object DownloadCenterStore {
                 if (context.contentResolver.delete(uri, null, null) > 0) deleted++
             }
         } else {
-            val dir = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "VOV")
-            dir.walkTopDown().filter { it.isFile && it.lastModified() / 1000L < cutoffSeconds }
-                .forEach { if (it.delete()) deleted++ }
+            val base = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: context.filesDir
+            listOf(File(base, "VOV"), File(base, "VOV Giao Thong+")).forEach { dir ->
+                dir.walkTopDown().filter { it.isFile && it.lastModified() / 1000L < cutoffSeconds }
+                    .forEach { if (it.delete()) deleted++ }
+            }
         }
         return deleted
     }
