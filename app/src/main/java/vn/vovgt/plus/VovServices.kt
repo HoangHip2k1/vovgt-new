@@ -1,139 +1,130 @@
-cGFja2FnZSB2bi52b3ZndC5wbHVzCgppbXBvcnQgYW5kcm9pZC5hcHAuTm90
-aWZpY2F0aW9uCmltcG9ydCBhbmRyb2lkLmFwcC5Ob3RpZmljYXRpb25DaGFu
-bmVsCmltcG9ydCBhbmRyb2lkLmFwcC5Ob3RpZmljYXRpb25NYW5hZ2VyCmlt
-cG9ydCBhbmRyb2lkLmFwcC5QZW5kaW5nSW50ZW50CmltcG9ydCBhbmRyb2lk
-LmNvbnRlbnQuSW50ZW50CmltcG9ydCBhbmRyb2lkLm9zLkhhbmRsZXIKaW1w
-b3J0IGFuZHJvaWQub3MuTG9vcGVyCmltcG9ydCBhbmRyb2lkeC5hbm5vdGF0
-aW9uLk9wdEluCmltcG9ydCBhbmRyb2lkeC5tZWRpYTMuY29tbW9uLnV0aWwu
-VW5zdGFibGVBcGkKaW1wb3J0IGFuZHJvaWR4Lm1lZGlhMy5leG9wbGF5ZXIu
-RXhvUGxheWVyCmltcG9ydCBhbmRyb2lkeC5tZWRpYTMuZXhvcGxheWVyLm9m
-ZmxpbmUuRG93bmxvYWQKaW1wb3J0IGFuZHJvaWR4Lm1lZGlhMy5leG9wbGF5
-ZXIub2ZmbGluZS5Eb3dubG9hZE1hbmFnZXIKaW1wb3J0IGFuZHJvaWR4Lm1l
-ZGlhMy5leG9wbGF5ZXIub2ZmbGluZS5Eb3dubG9hZFNlcnZpY2UKaW1wb3J0
-IGFuZHJvaWR4Lm1lZGlhMy5leG9wbGF5ZXIuc291cmNlLkRlZmF1bHRNZWRp
-YVNvdXJjZUZhY3RvcnkKaW1wb3J0IGFuZHJvaWR4Lm1lZGlhMy5zZXNzaW9u
-Lk1lZGlhU2Vzc2lvbgppbXBvcnQgYW5kcm9pZHgubWVkaWEzLnNlc3Npb24u
-TWVkaWFTZXNzaW9uU2VydmljZQppbXBvcnQgYW5kcm9pZHgubWVkaWEzLmV4
-b3BsYXllci5zY2hlZHVsZXIuUGxhdGZvcm1TY2hlZHVsZXIKaW1wb3J0IGFu
-ZHJvaWR4Lm1lZGlhMy5leG9wbGF5ZXIuc2NoZWR1bGVyLlNjaGVkdWxlcgoK
-Y2xhc3MgVm92QXBwbGljYXRpb24gOiBhbmRyb2lkLmFwcC5BcHBsaWNhdGlv
-bigpIHsKICAgIG92ZXJyaWRlIGZ1biBvbkNyZWF0ZSgpIHsKICAgICAgICBz
-dXBlci5vbkNyZWF0ZSgpCiAgICAgICAgT2ZmbGluZVN0b3JlLmluaXQodGhp
-cykKICAgICAgICB2YWwgbm90aWZpY2F0aW9ucyA9IGdldFN5c3RlbVNlcnZp
-Y2UoTm90aWZpY2F0aW9uTWFuYWdlcjo6Y2xhc3MuamF2YSkKICAgICAgICBu
-b3RpZmljYXRpb25zLmNyZWF0ZU5vdGlmaWNhdGlvbkNoYW5uZWwoCiAgICAg
-ICAgICAgIE5vdGlmaWNhdGlvbkNoYW5uZWwoInZvdl9zdGF0dXMiLCAiS+G6
-v3QgcXXhuqMgdOG6o2kgeHXhu5FuZyIsIE5vdGlmaWNhdGlvbk1hbmFnZXIu
-SU1QT1JUQU5DRV9ERUZBVUxUKQogICAgICAgICkKICAgICAgICBPZmZsaW5l
-U3RvcmUubWFuYWdlci5hZGRMaXN0ZW5lcihvYmplY3QgOiBEb3dubG9hZE1h
-bmFnZXIuTGlzdGVuZXIgewogICAgICAgICAgICBvdmVycmlkZSBmdW4gb25E
-b3dubG9hZENoYW5nZWQobWFuYWdlcjogRG93bmxvYWRNYW5hZ2VyLCBkb3du
-bG9hZDogRG93bmxvYWQsIGZpbmFsRXhjZXB0aW9uOiBFeGNlcHRpb24/KSB7
-CiAgICAgICAgICAgICAgICBpZiAoZG93bmxvYWQuc3RhdGUgPT0gRG93bmxv
-YWQuU1RBVEVfQ09NUExFVEVEKSB7CiAgICAgICAgICAgICAgICAgICAgQXVk
-aW9FeHBvcnRTdGF0ZS5yZXF1ZXN0KHRoaXNAVm92QXBwbGljYXRpb24sIGRv
-d25sb2FkKQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgdmFs
-IHRpdGxlID0gd2hlbiAoZG93bmxvYWQuc3RhdGUpIHsKICAgICAgICAgICAg
-ICAgICAgICBEb3dubG9hZC5TVEFURV9DT01QTEVURUQgLT4gIlThuqNpIGhv
-w6BuIHThuqV0IgogICAgICAgICAgICAgICAgICAgIERvd25sb2FkLlNUQVRF
-X0ZBSUxFRCAtPiAiS2jDtG5nIHRo4buDIHThuqNpIGNoxrDGoW5nIHRyw6xu
-aCIKICAgICAgICAgICAgICAgICAgICBlbHNlIC0+IHJldHVybgogICAgICAg
-ICAgICAgICAgfQogICAgICAgICAgICAgICAgdmFsIHRleHQgPSBpZiAoZG93
-bmxvYWQuc3RhdGUgPT0gRG93bmxvYWQuU1RBVEVfRkFJTEVEKQogICAgICAg
-ICAgICAgICAgICAgICIke09mZmxpbmVTdG9yZS50aXRsZShkb3dubG9hZCl9
-IMK3IEtp4buDbSB0cmEgxJHEg25nIG5o4bqtcCBob+G6t2Mga+G6v3QgbuG7
-kWkiIGVsc2UgT2ZmbGluZVN0b3JlLnRpdGxlKGRvd25sb2FkKQogICAgICAg
-ICAgICAgICAgdmFsIGludGVudCA9IFBlbmRpbmdJbnRlbnQuZ2V0QWN0aXZp
-dHkoCiAgICAgICAgICAgICAgICAgICAgdGhpc0BWb3ZBcHBsaWNhdGlvbiwg
-MCwgSW50ZW50KHRoaXNAVm92QXBwbGljYXRpb24sIE1haW5BY3Rpdml0eTo6
-Y2xhc3MuamF2YSksCiAgICAgICAgICAgICAgICAgICAgUGVuZGluZ0ludGVu
-dC5GTEFHX0lNTVVUQUJMRSBvciBQZW5kaW5nSW50ZW50LkZMQUdfVVBEQVRF
-X0NVUlJFTlQKICAgICAgICAgICAgICAgICkKICAgICAgICAgICAgICAgIHZh
-bCBub3RpZmljYXRpb24gPSBOb3RpZmljYXRpb24uQnVpbGRlcih0aGlzQFZv
-dkFwcGxpY2F0aW9uLCAidm92X3N0YXR1cyIpCiAgICAgICAgICAgICAgICAg
-ICAgLnNldFNtYWxsSWNvbihSLmRyYXdhYmxlLmljX3N0YXRfcmFkaW8pCiAg
-ICAgICAgICAgICAgICAgICAgLnNldENvbnRlbnRUaXRsZSh0aXRsZSkuc2V0
-Q29udGVudFRleHQodGV4dCkuc2V0Q29udGVudEludGVudChpbnRlbnQpCiAg
-ICAgICAgICAgICAgICAgICAgLnNldEF1dG9DYW5jZWwodHJ1ZSkuYnVpbGQo
-KQogICAgICAgICAgICAgICAgbm90aWZpY2F0aW9ucy5ub3RpZnkoZG93bmxv
-YWQucmVxdWVzdC5pZC5oYXNoQ29kZSgpIGFuZCAweDdmZmZmZmZmLCBub3Rp
-ZmljYXRpb24pCiAgICAgICAgICAgIH0KICAgICAgICB9KQogICAgfQp9CgpA
-T3B0SW4oVW5zdGFibGVBcGk6OmNsYXNzKQpjbGFzcyBWb3ZEb3dubG9hZFNl
-cnZpY2UgOiBEb3dubG9hZFNlcnZpY2UoMTAyLCAxMDAwTCwgInZvdl9kb3du
-bG9hZHMiLCBSLnN0cmluZy5kb3dubG9hZF9jaGFubmVsLCBSLnN0cmluZy5k
-b3dubG9hZF9jaGFubmVsX2Rlc2NyaXB0aW9uKSB7CiAgICBvdmVycmlkZSBm
-dW4gZ2V0RG93bmxvYWRNYW5hZ2VyKCk6IERvd25sb2FkTWFuYWdlciA9IE9m
-ZmxpbmVTdG9yZS5tYW5hZ2VyCgogICAgb3ZlcnJpZGUgZnVuIGdldFNjaGVk
-dWxlcigpOiBTY2hlZHVsZXI/ID0gUGxhdGZvcm1TY2hlZHVsZXIodGhpcywg
-MjUwMDEpCgogICAgb3ZlcnJpZGUgZnVuIGdldEZvcmVncm91bmROb3RpZmlj
-YXRpb24oZG93bmxvYWRzOiBNdXRhYmxlTGlzdDxEb3dubG9hZD4sIG5vdE1l
-dFJlcXVpcmVtZW50czogSW50KTogTm90aWZpY2F0aW9uIHsKICAgICAgICB2
-YWwgYWN0aXZlID0gZG93bmxvYWRzLmZpbHRlciB7IGl0LnN0YXRlID09IERv
-d25sb2FkLlNUQVRFX0RPV05MT0FESU5HIHx8IGl0LnN0YXRlID09IERvd25s
-b2FkLlNUQVRFX1FVRVVFRCB8fCBpdC5zdGF0ZSA9PSBEb3dubG9hZC5TVEFU
-RV9SRVNUQVJUSU5HIH0KICAgICAgICB2YWwgdG90YWwgPSBhY3RpdmUuY291
-bnQoKQogICAgICAgIHZhbCBhbW91bnRzID0gYWN0aXZlLm1hcE5vdE51bGwg
-eyBpdC5wZXJjZW50RG93bmxvYWRlZC50YWtlSWYgeyBwY3QgLT4gcGN0ID49
-IDBmIH0gfQogICAgICAgIHZhbCBwcm9ncmVzcyA9IGlmIChhbW91bnRzLmlz
-RW1wdHkoKSkgMCBlbHNlIGFtb3VudHMuYXZlcmFnZSgpLnRvSW50KCkuY29l
-cmNlSW4oMCwgMTAwKQogICAgICAgIHZhbCBtZXNzYWdlID0gd2hlbiB7CiAg
-ICAgICAgICAgIG5vdE1ldFJlcXVpcmVtZW50cyAhPSAwIC0+ICLEkGFuZyBj
-aOG7nSBr4bq/dCBu4buRaSBt4bqhbmfigKYiCiAgICAgICAgICAgIHRvdGFs
-ID4gMSAtPiAixJBhbmcgdOG6o2kgJHRvdGFsIGNoxrDGoW5nIHRyw6xuaCDC
-tyAkcHJvZ3Jlc3MlIgogICAgICAgICAgICB0b3RhbCA9PSAxIC0+IE9mZmxp
-bmVTdG9yZS50aXRsZShhY3RpdmUuZmlyc3QoKSkKICAgICAgICAgICAgZWxz
-ZSAtPiAixJBhbmcgY2h14bqpbiBi4buLIHThuqNp4oCmIgogICAgICAgIH0K
-ICAgICAgICB2YWwgcGkgPSBQZW5kaW5nSW50ZW50LmdldEFjdGl2aXR5KAog
-ICAgICAgICAgICB0aGlzLCAwLCBJbnRlbnQodGhpcywgTWFpbkFjdGl2aXR5
-OjpjbGFzcy5qYXZhKSwgUGVuZGluZ0ludGVudC5GTEFHX0lNTVVUQUJMRSBv
-ciBQZW5kaW5nSW50ZW50LkZMQUdfVVBEQVRFX0NVUlJFTlQKICAgICAgICAp
-CiAgICAgICAgcmV0dXJuIE5vdGlmaWNhdGlvbi5CdWlsZGVyKHRoaXMsICJ2
-b3ZfZG93bmxvYWRzIikKICAgICAgICAgICAgLnNldFNtYWxsSWNvbihSLmRy
-YXdhYmxlLmljX3N0YXRfcmFkaW8pCiAgICAgICAgICAgIC5zZXRDb250ZW50
-VGl0bGUoIlZPViBHaWFvIHRow7RuZysgwrcgxJBhbmcgdOG6o2kiKQogICAg
-ICAgICAgICAuc2V0Q29udGVudFRleHQobWVzc2FnZSkKICAgICAgICAgICAg
-LnNldENvbnRlbnRJbnRlbnQocGkpCiAgICAgICAgICAgIC5zZXRPbmx5QWxl
-cnRPbmNlKHRydWUpCiAgICAgICAgICAgIC5zZXRPbmdvaW5nKHRydWUpCiAg
-ICAgICAgICAgIC5zZXRQcm9ncmVzcygxMDAsIHByb2dyZXNzLCBhbW91bnRz
-LmlzRW1wdHkoKSkKICAgICAgICAgICAgLmJ1aWxkKCkKICAgIH0KfQoKQE9w
-dEluKFVuc3RhYmxlQXBpOjpjbGFzcykKY2xhc3MgQXVkaW9TZXJ2aWNlIDog
-TWVkaWFTZXNzaW9uU2VydmljZSgpIHsKICAgIGNvbXBhbmlvbiBvYmplY3Qg
-ewogICAgICAgIGNvbnN0IHZhbCBBQ1RJT05fU0VUX1NMRUVQX1RJTUVSID0g
-InZuLnZvdmd0LnBsdXMuYWN0aW9uLlNFVF9TTEVFUF9USU1FUiIKICAgICAg
-ICBjb25zdCB2YWwgQUNUSU9OX0NBTkNFTF9TTEVFUF9USU1FUiA9ICJ2bi52
-b3ZndC5wbHVzLmFjdGlvbi5DQU5DRUxfU0xFRVBfVElNRVIiCiAgICAgICAg
-Y29uc3QgdmFsIEVYVFJBX0RFTEFZX01TID0gImRlbGF5X21zIgogICAgfQog
-ICAgcHJpdmF0ZSB2YWwgc2xlZXBIYW5kbGVyID0gSGFuZGxlcihMb29wZXIu
-Z2V0TWFpbkxvb3BlcigpKQogICAgcHJpdmF0ZSB2YXIgc2xlZXBTdG9wOiBS
-dW5uYWJsZT8gPSBudWxsCiAgICBwcml2YXRlIHZhciBzZXNzaW9uOiBNZWRp
-YVNlc3Npb24/ID0gbnVsbAogICAgb3ZlcnJpZGUgZnVuIG9uQ3JlYXRlKCkg
-ewogICAgICAgIHN1cGVyLm9uQ3JlYXRlKCkKICAgICAgICB2YWwgcGxheWVy
-ID0gRXhvUGxheWVyLkJ1aWxkZXIodGhpcykKICAgICAgICAgICAgLnNldE1l
-ZGlhU291cmNlRmFjdG9yeShEZWZhdWx0TWVkaWFTb3VyY2VGYWN0b3J5KE9m
-ZmxpbmVTdG9yZS5wbGF5YmFja0ZhY3RvcnkoKSkpCiAgICAgICAgICAgIC5i
-dWlsZCgpCiAgICAgICAgc2Vzc2lvbiA9IE1lZGlhU2Vzc2lvbi5CdWlsZGVy
-KHRoaXMsIHBsYXllcikuYnVpbGQoKQogICAgfQogICAgb3ZlcnJpZGUgZnVu
-IG9uU3RhcnRDb21tYW5kKGludGVudDogSW50ZW50PywgZmxhZ3M6IEludCwg
-c3RhcnRJZDogSW50KTogSW50IHsKICAgICAgICB3aGVuIChpbnRlbnQ/LmFj
-dGlvbikgewogICAgICAgICAgICBBQ1RJT05fU0VUX1NMRUVQX1RJTUVSIC0+
-IHsKICAgICAgICAgICAgICAgIHNsZWVwU3RvcD8ubGV0KHNsZWVwSGFuZGxl
-cjo6cmVtb3ZlQ2FsbGJhY2tzKQogICAgICAgICAgICAgICAgdmFsIGRlbGF5
-TXMgPSBpbnRlbnQuZ2V0TG9uZ0V4dHJhKEVYVFJBX0RFTEFZX01TLCAwTCku
-Y29lcmNlQXRMZWFzdCgwTCkKICAgICAgICAgICAgICAgIGlmIChkZWxheU1z
-ID4gMEwpIHsKICAgICAgICAgICAgICAgICAgICB2YWwgc3RvcCA9IFJ1bm5h
-YmxlIHsgc2Vzc2lvbj8ucGxheWVyPy5wYXVzZSgpIH0KICAgICAgICAgICAg
-ICAgICAgICBzbGVlcFN0b3AgPSBzdG9wCiAgICAgICAgICAgICAgICAgICAg
-c2xlZXBIYW5kbGVyLnBvc3REZWxheWVkKHN0b3AsIGRlbGF5TXMpCiAgICAg
-ICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICAgICAgQUNUSU9O
-X0NBTkNFTF9TTEVFUF9USU1FUiAtPiB7CiAgICAgICAgICAgICAgICBzbGVl
-cFN0b3A/LmxldChzbGVlcEhhbmRsZXI6OnJlbW92ZUNhbGxiYWNrcykKICAg
-ICAgICAgICAgICAgIHNsZWVwU3RvcCA9IG51bGwKICAgICAgICAgICAgfQog
-ICAgICAgIH0KICAgICAgICByZXR1cm4gc3VwZXIub25TdGFydENvbW1hbmQo
-aW50ZW50LCBmbGFncywgc3RhcnRJZCkKICAgIH0KICAgIG92ZXJyaWRlIGZ1
-biBvbkdldFNlc3Npb24oY29udHJvbGxlckluZm86IE1lZGlhU2Vzc2lvbi5D
-b250cm9sbGVySW5mbyk6IE1lZGlhU2Vzc2lvbj8gPSBzZXNzaW9uCiAgICBv
-dmVycmlkZSBmdW4gb25EZXN0cm95KCkgewogICAgICAgIHNsZWVwU3RvcD8u
-bGV0KHNsZWVwSGFuZGxlcjo6cmVtb3ZlQ2FsbGJhY2tzKQogICAgICAgIHNl
-c3Npb24/LnJ1biB7IHBsYXllci5yZWxlYXNlKCk7IHJlbGVhc2UoKSB9CiAg
-ICAgICAgc2Vzc2lvbiA9IG51bGwKICAgICAgICBzdXBlci5vbkRlc3Ryb3ko
-KQogICAgfQp9Cg==
+package vn.vovgt.plus
+
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
+import android.os.Handler
+import android.os.Looper
+import androidx.annotation.OptIn
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.offline.Download
+import androidx.media3.exoplayer.offline.DownloadManager
+import androidx.media3.exoplayer.offline.DownloadService
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.session.MediaSession
+import androidx.media3.session.MediaSessionService
+import androidx.media3.exoplayer.scheduler.PlatformScheduler
+import androidx.media3.exoplayer.scheduler.Scheduler
+
+class VovApplication : android.app.Application() {
+    override fun onCreate() {
+        super.onCreate()
+        OfflineStore.init(this)
+        val notifications = getSystemService(NotificationManager::class.java)
+        notifications.createNotificationChannel(
+            NotificationChannel("vov_status", "Kết quả tải xuống", NotificationManager.IMPORTANCE_DEFAULT)
+        )
+        OfflineStore.manager.addListener(object : DownloadManager.Listener {
+            override fun onDownloadChanged(manager: DownloadManager, download: Download, finalException: Exception?) {
+                if (download.state == Download.STATE_COMPLETED) {
+                    AudioExportState.request(this@VovApplication, download)
+                }
+                val title = when (download.state) {
+                    Download.STATE_COMPLETED -> "Tải hoàn tất"
+                    Download.STATE_FAILED -> "Không thể tải chương trình"
+                    else -> return
+                }
+                val text = if (download.state == Download.STATE_FAILED)
+                    "${OfflineStore.title(download)} · Kiểm tra đăng nhập hoặc kết nối" else OfflineStore.title(download)
+                val intent = PendingIntent.getActivity(
+                    this@VovApplication, 0, Intent(this@VovApplication, MainActivity::class.java),
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                )
+                val notification = Notification.Builder(this@VovApplication, "vov_status")
+                    .setSmallIcon(R.drawable.ic_stat_radio)
+                    .setContentTitle(title).setContentText(text).setContentIntent(intent)
+                    .setAutoCancel(true).build()
+                notifications.notify(download.request.id.hashCode() and 0x7fffffff, notification)
+            }
+        })
+    }
+}
+
+@OptIn(UnstableApi::class)
+class VovDownloadService : DownloadService(102, 1000L, "vov_downloads", R.string.download_channel, R.string.download_channel_description) {
+    override fun getDownloadManager(): DownloadManager = OfflineStore.manager
+
+    override fun getScheduler(): Scheduler? = PlatformScheduler(this, 25001)
+
+    override fun getForegroundNotification(downloads: MutableList<Download>, notMetRequirements: Int): Notification {
+        val active = downloads.filter { it.state == Download.STATE_DOWNLOADING || it.state == Download.STATE_QUEUED || it.state == Download.STATE_RESTARTING }
+        val total = active.count()
+        val amounts = active.mapNotNull { it.percentDownloaded.takeIf { pct -> pct >= 0f } }
+        val progress = if (amounts.isEmpty()) 0 else amounts.average().toInt().coerceIn(0, 100)
+        val message = when {
+            notMetRequirements != 0 -> "Đang chờ kết nối mạng…"
+            total > 1 -> "Đang tải $total chương trình · $progress%"
+            total == 1 -> OfflineStore.title(active.first())
+            else -> "Đang chuẩn bị tải…"
+        }
+        val pi = PendingIntent.getActivity(
+            this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        return Notification.Builder(this, "vov_downloads")
+            .setSmallIcon(R.drawable.ic_stat_radio)
+            .setContentTitle("VOV Giao thông+ · Đang tải")
+            .setContentText(message)
+            .setContentIntent(pi)
+            .setOnlyAlertOnce(true)
+            .setOngoing(true)
+            .setProgress(100, progress, amounts.isEmpty())
+            .build()
+    }
+}
+
+@OptIn(UnstableApi::class)
+class AudioService : MediaSessionService() {
+    companion object {
+        const val ACTION_SET_SLEEP_TIMER = "vn.vovgt.plus.action.SET_SLEEP_TIMER"
+        const val ACTION_CANCEL_SLEEP_TIMER = "vn.vovgt.plus.action.CANCEL_SLEEP_TIMER"
+        const val EXTRA_DELAY_MS = "delay_ms"
+    }
+    private val sleepHandler = Handler(Looper.getMainLooper())
+    private var sleepStop: Runnable? = null
+    private var session: MediaSession? = null
+    override fun onCreate() {
+        super.onCreate()
+        val player = ExoPlayer.Builder(this)
+            .setMediaSourceFactory(DefaultMediaSourceFactory(OfflineStore.playbackFactory()))
+            .build()
+        session = MediaSession.Builder(this, player).build()
+    }
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.action) {
+            ACTION_SET_SLEEP_TIMER -> {
+                sleepStop?.let(sleepHandler::removeCallbacks)
+                val delayMs = intent.getLongExtra(EXTRA_DELAY_MS, 0L).coerceAtLeast(0L)
+                if (delayMs > 0L) {
+                    val stop = Runnable { session?.player?.pause() }
+                    sleepStop = stop
+                    sleepHandler.postDelayed(stop, delayMs)
+                }
+            }
+            ACTION_CANCEL_SLEEP_TIMER -> {
+                sleepStop?.let(sleepHandler::removeCallbacks)
+                sleepStop = null
+            }
+        }
+        return super.onStartCommand(intent, flags, startId)
+    }
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? = session
+    override fun onDestroy() {
+        sleepStop?.let(sleepHandler::removeCallbacks)
+        session?.run { player.release(); release() }
+        session = null
+        super.onDestroy()
+    }
+}
