@@ -8,6 +8,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.Call
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
@@ -22,7 +23,23 @@ import java.util.concurrent.TimeUnit
  * It is intentionally independent from VOV Media login/session and OfflineStore.
  */
 internal object VovPublicMediaDownloader {
-    data class Result(val displayName: String, val location: String)
+    data class Result(val displayName: String, val location: String, val mediaUri: String)
+    private data class SavedFile(val location: String, val mediaUri: String)
+    @Volatile private var activeCall: Call? = null
+
+    fun cancelCurrent() {
+        activeCall?.cancel()
+    }
+
+    private inline fun <T> withResponse(request: Request, block: (okhttp3.Response) -> T): T {
+        val call = client.newCall(request)
+        activeCall = call
+        try {
+            return call.execute().use(block)
+        } finally {
+            if (activeCall === call) activeCall = null
+        }
+    }
 
     private val client by lazy {
         OkHttpClient.Builder()
@@ -66,7 +83,7 @@ internal object VovPublicMediaDownloader {
         context: Context, url: String, title: String, pageUrl: String,
         onProgress: (String) -> Unit
     ): Result {
-        return client.newCall(request(url, pageUrl)).execute().use { response ->
+        return withResponse(request(url, pageUrl)) { response ->
             if (!response.isSuccessful) error("Máy chủ VOV trả về HTTP ${response.code}.")
             val body = response.body ?: error("Máy chủ không trả dữ liệu.")
             val type = body.contentType()?.toString().orEmpty()
@@ -86,7 +103,7 @@ internal object VovPublicMediaDownloader {
                 }
                 if (total < 1024) error("File nhận được quá nhỏ, có thể không phải video hợp lệ.")
             }
-            Result(name, saved)
+            Result(name, saved.location, saved.mediaUri)
         }
     }
 
@@ -155,21 +172,21 @@ internal object VovPublicMediaDownloader {
                 onProgress("Đã ghép HLS: ${index + 1}/${segments.size}")
             }
         }
-        return Result(name, saved)
+        return Result(name, saved.location, saved.mediaUri)
     }
 
     private fun fetchText(url: String, pageUrl: String): String {
-        client.newCall(request(url, pageUrl)).execute().use { response ->
+        return withResponse(request(url, pageUrl)) { response ->
             if (!response.isSuccessful) error("Không tải được playlist (HTTP ${response.code}).")
             val type = response.body?.contentType()?.toString().orEmpty()
             if (type.contains("text/html", true)) error("Máy chủ trả HTML thay vì playlist M3U8.")
-            return response.body?.string() ?: error("Playlist rỗng.")
+            response.body?.string() ?: error("Playlist rỗng.")
         }
     }
 
     private fun copyResource(url: String, pageUrl: String, output: OutputStream) {
         VovPublicDownloadControl.awaitIfPaused()
-        client.newCall(request(url, pageUrl)).execute().use { response ->
+        withResponse(request(url, pageUrl)) { response ->
             if (!response.isSuccessful) error("Không tải được một phân đoạn HLS (HTTP ${response.code}).")
             val body = response.body ?: error("Phân đoạn HLS rỗng.")
             body.byteStream().use { input -> input.copyTo(output, 64 * 1024) }
@@ -179,7 +196,7 @@ internal object VovPublicMediaDownloader {
 
     private fun writeToDownloads(
         context: Context, name: String, mime: String, write: (OutputStream) -> Unit
-    ): String {
+    ): SavedFile {
         if (Build.VERSION.SDK_INT >= 29) {
             val values = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, name)
@@ -195,7 +212,7 @@ internal object VovPublicMediaDownloader {
                 output.use(write)
                 val done = ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) }
                 context.contentResolver.update(uri, done, null, null)
-                return "Download/VOV"
+                return SavedFile("Download/VOV", uri.toString())
             } catch (e: Exception) {
                 context.contentResolver.delete(uri, null, null)
                 throw e
@@ -211,7 +228,7 @@ internal object VovPublicMediaDownloader {
             file.delete()
             throw e
         }
-        return file.absolutePath
+        return SavedFile(file.absolutePath, Uri.fromFile(file).toString())
     }
 
     private fun safeName(raw: String, fallback: String): String {
