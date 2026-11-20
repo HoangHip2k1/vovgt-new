@@ -1,201 +1,214 @@
-cGFja2FnZSB2bi52b3ZndC5wbHVzCgppbXBvcnQgYW5kcm9pZC5hcHAuTm90
-aWZpY2F0aW9uCmltcG9ydCBhbmRyb2lkLmFwcC5Ob3RpZmljYXRpb25DaGFu
-bmVsCmltcG9ydCBhbmRyb2lkLmFwcC5Ob3RpZmljYXRpb25NYW5hZ2VyCmlt
-cG9ydCBhbmRyb2lkLmFwcC5QZW5kaW5nSW50ZW50CmltcG9ydCBhbmRyb2lk
-LmFwcC5TZXJ2aWNlCmltcG9ydCBhbmRyb2lkLmNvbnRlbnQuSW50ZW50Cmlt
-cG9ydCBhbmRyb2lkLmNvbnRlbnQucG0uU2VydmljZUluZm8KaW1wb3J0IGFu
-ZHJvaWQub3MuQnVpbGQKaW1wb3J0IGFuZHJvaWQub3MuSUJpbmRlcgppbXBv
-cnQgYW5kcm9pZC5vcy5IYW5kbGVyCmltcG9ydCBhbmRyb2lkLm9zLkxvb3Bl
-cgppbXBvcnQgYW5kcm9pZC51dGlsLkxvZwppbXBvcnQgYW5kcm9pZHguY29y
-ZS5hcHAuTm90aWZpY2F0aW9uQ29tcGF0CmltcG9ydCBrb3RsaW54LmNvcm91
-dGluZXMuQ2FuY2VsbGF0aW9uRXhjZXB0aW9uCmltcG9ydCBrb3RsaW54LmNv
-cm91dGluZXMuQ29yb3V0aW5lU2NvcGUKaW1wb3J0IGtvdGxpbnguY29yb3V0
-aW5lcy5EaXNwYXRjaGVycwppbXBvcnQga290bGlueC5jb3JvdXRpbmVzLlN1
-cGVydmlzb3JKb2IKaW1wb3J0IGtvdGxpbnguY29yb3V0aW5lcy5jYW5jZWwK
-aW1wb3J0IGtvdGxpbnguY29yb3V0aW5lcy5pc0FjdGl2ZQppbXBvcnQga290
-bGlueC5jb3JvdXRpbmVzLmxhdW5jaAoKLyoqCiAqIEZvcmVncm91bmQgZG93
-bmxvYWQgc2VydmljZSB1c2VkIG9ubHkgYnkgdGhlIHB1YmxpYyBWT1YgYXJj
-aGl2ZSB0YWIuCiAqIEl0IGlzIGluZGVwZW5kZW50IGZyb20gVk9WIE1lZGlh
-IGRvd25sb2FkcyBhbmQgYXV0aGVudGljYXRpb24uCiAqLwpjbGFzcyBWb3ZQ
-dWJsaWNEb3dubG9hZFNlcnZpY2UgOiBTZXJ2aWNlKCkgewogICAgcHJpdmF0
-ZSB2YWwgc2VydmljZVNjb3BlID0gQ29yb3V0aW5lU2NvcGUoU3VwZXJ2aXNv
-ckpvYigpICsgRGlzcGF0Y2hlcnMuSU8pCiAgICBwcml2YXRlIHZhbCBtYWlu
-SGFuZGxlciA9IEhhbmRsZXIoTG9vcGVyLmdldE1haW5Mb29wZXIoKSkKICAg
-IHByaXZhdGUgdmFyIGRvd25sb2FkSm9iOiBrb3RsaW54LmNvcm91dGluZXMu
-Sm9iPyA9IG51bGwKICAgIHByaXZhdGUgdmFsIG5vdGlmaWNhdGlvbk1hbmFn
-ZXIgYnkgbGF6eSB7CiAgICAgICAgZ2V0U3lzdGVtU2VydmljZShOT1RJRklD
-QVRJT05fU0VSVklDRSkgYXMgTm90aWZpY2F0aW9uTWFuYWdlcgogICAgfQoK
-ICAgIG92ZXJyaWRlIGZ1biBvbkNyZWF0ZSgpIHsKICAgICAgICBzdXBlci5v
-bkNyZWF0ZSgpCiAgICAgICAgY3JlYXRlTm90aWZpY2F0aW9uQ2hhbm5lbCgp
-CiAgICB9CgogICAgb3ZlcnJpZGUgZnVuIG9uU3RhcnRDb21tYW5kKGludGVu
-dDogSW50ZW50PywgZmxhZ3M6IEludCwgc3RhcnRJZDogSW50KTogSW50IHsK
-ICAgICAgICB3aGVuIChpbnRlbnQ/LmFjdGlvbikgewogICAgICAgICAgICBB
-Q1RJT05fUEFVU0UgLT4gewogICAgICAgICAgICAgICAgVm92UHVibGljRG93
-bmxvYWRDb250cm9sLnBhdXNlKCkKICAgICAgICAgICAgICAgIHZhbCB0aXRs
-ZSA9IFZvdlB1YmxpY0Rvd25sb2FkU3RhdGUucmVhZChhcHBsaWNhdGlvbkNv
-bnRleHQpLnRpdGxlCiAgICAgICAgICAgICAgICBWb3ZQdWJsaWNEb3dubG9h
-ZFN0YXRlLnBhdXNlZChhcHBsaWNhdGlvbkNvbnRleHQsIHRpdGxlKQogICAg
-ICAgICAgICAgICAgdXBkYXRlTm90aWZpY2F0aW9uKCLEkMOjIHThuqFtIGTh
-u6tuZzogJHRpdGxlIiwgb25nb2luZyA9IHRydWUsIHBhdXNlZCA9IHRydWUp
-CiAgICAgICAgICAgICAgICByZXR1cm4gU1RBUlRfTk9UX1NUSUNLWQogICAg
-ICAgICAgICB9CiAgICAgICAgICAgIEFDVElPTl9SRVNVTUUgLT4gewogICAg
-ICAgICAgICAgICAgVm92UHVibGljRG93bmxvYWRDb250cm9sLnJlc3VtZSgp
-CiAgICAgICAgICAgICAgICB2YWwgdGl0bGUgPSBWb3ZQdWJsaWNEb3dubG9h
-ZFN0YXRlLnJlYWQoYXBwbGljYXRpb25Db250ZXh0KS50aXRsZQogICAgICAg
-ICAgICAgICAgVm92UHVibGljRG93bmxvYWRTdGF0ZS5yZXN1bWVkKGFwcGxp
-Y2F0aW9uQ29udGV4dCwgdGl0bGUpCiAgICAgICAgICAgICAgICB1cGRhdGVO
-b3RpZmljYXRpb24oIsSQYW5nIHRp4bq/cCB04bulYzogJHRpdGxlIiwgb25n
-b2luZyA9IHRydWUpCiAgICAgICAgICAgICAgICByZXR1cm4gU1RBUlRfTk9U
-X1NUSUNLWQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIGlmIChp
-bnRlbnQ/LmFjdGlvbiAhPSBBQ1RJT05fU1RBUlQpIHsKICAgICAgICAgICAg
-c3RvcFNlbGYoc3RhcnRJZCkKICAgICAgICAgICAgcmV0dXJuIFNUQVJUX05P
-VF9TVElDS1kKICAgICAgICB9CgogICAgICAgIGlmIChkb3dubG9hZEpvYj8u
-aXNBY3RpdmUgPT0gdHJ1ZSkgewogICAgICAgICAgICB1cGRhdGVOb3RpZmlj
-YXRpb24oIsSQYW5nIGPDsyBt4buZdCBsxrDhu6N0IHThuqNpIFZPViBraMOh
-YyBjaOG6oXkuIiwgb25nb2luZyA9IHRydWUpCiAgICAgICAgICAgIHJldHVy
-biBTVEFSVF9OT1RfU1RJQ0tZCiAgICAgICAgfQoKICAgICAgICB2YWwgbWVk
-aWFVcmwgPSBpbnRlbnQuZ2V0U3RyaW5nRXh0cmEoRVhUUkFfVVJMKS5vckVt
-cHR5KCkKICAgICAgICB2YWwgdGl0bGUgPSBpbnRlbnQuZ2V0U3RyaW5nRXh0
-cmEoRVhUUkFfVElUTEUpLm9yRW1wdHkoKS5pZkJsYW5rIHsgIkNoxrDGoW5n
-IHRyw6xuaCBWT1YiIH0KICAgICAgICB2YWwgcGFnZVVybCA9IGludGVudC5n
-ZXRTdHJpbmdFeHRyYShFWFRSQV9QQUdFKS5vckVtcHR5KCkuaWZCbGFuayB7
-CiAgICAgICAgICAgICJodHRwczovL3Zvdi5nb3Yudm4vbmdoZS12YS14ZW0t
-bGFpIgogICAgICAgIH0KICAgICAgICBpZiAobWVkaWFVcmwuaXNCbGFuaygp
-KSB7CiAgICAgICAgICAgIHN0b3BTZWxmKHN0YXJ0SWQpCiAgICAgICAgICAg
-IHJldHVybiBTVEFSVF9OT1RfU1RJQ0tZCiAgICAgICAgfQoKICAgICAgICB0
-cnkgewogICAgICAgICAgICBzdGFydEFzRm9yZWdyb3VuZCgixJBhbmcgY2h1
-4bqpbiBi4buLIHThuqNpOiAkdGl0bGUiKQogICAgICAgIH0gY2F0Y2ggKGVy
-cm9yOiBFeGNlcHRpb24pIHsKICAgICAgICAgICAgLy8gQSBmb3JlZ3JvdW5k
-LXNlcnZpY2Ugc3RhcnR1cCBleGNlcHRpb24gbXVzdCBub3QgY3Jhc2ggdGhl
-IHdob2xlIGFwcCBwcm9jZXNzLgogICAgICAgICAgICBMb2cuZShUQUcsICJD
-YW5ub3QgcHJvbW90ZSBWT1YgZG93bmxvYWQgc2VydmljZSB0byBmb3JlZ3Jv
-dW5kIiwgZXJyb3IpCiAgICAgICAgICAgIHN0b3BTZWxmKHN0YXJ0SWQpCiAg
-ICAgICAgICAgIHJldHVybiBTVEFSVF9OT1RfU1RJQ0tZCiAgICAgICAgfQoK
-ICAgICAgICBWb3ZQdWJsaWNEb3dubG9hZENvbnRyb2wucmVzdW1lKCkKICAg
-ICAgICBWb3ZQdWJsaWNEb3dubG9hZFN0YXRlLnN0YXJ0ZWQoYXBwbGljYXRp
-b25Db250ZXh0LCB0aXRsZSkKICAgICAgICBkb3dubG9hZEpvYiA9IHNlcnZp
-Y2VTY29wZS5sYXVuY2ggewogICAgICAgICAgICB0cnkgewogICAgICAgICAg
-ICAgICAgdmFsIHJlc3VsdCA9IFZvdlB1YmxpY01lZGlhRG93bmxvYWRlci5k
-b3dubG9hZCgKICAgICAgICAgICAgICAgICAgICBjb250ZXh0ID0gYXBwbGlj
-YXRpb25Db250ZXh0LAogICAgICAgICAgICAgICAgICAgIG1lZGlhVXJsID0g
-bWVkaWFVcmwsCiAgICAgICAgICAgICAgICAgICAgdGl0bGUgPSB0aXRsZSwK
-ICAgICAgICAgICAgICAgICAgICBwYWdlVXJsID0gcGFnZVVybCwKICAgICAg
-ICAgICAgICAgICAgICBvblByb2dyZXNzID0geyBtZXNzYWdlIC0+CiAgICAg
-ICAgICAgICAgICAgICAgICAgIFZvdlB1YmxpY0Rvd25sb2FkU3RhdGUucHJv
-Z3Jlc3MoYXBwbGljYXRpb25Db250ZXh0LCB0aXRsZSwgbWVzc2FnZSkKICAg
-ICAgICAgICAgICAgICAgICAgICAgdXBkYXRlTm90aWZpY2F0aW9uKG1lc3Nh
-Z2UsIG9uZ29pbmcgPSB0cnVlKQogICAgICAgICAgICAgICAgICAgIH0KICAg
-ICAgICAgICAgICAgICkKICAgICAgICAgICAgICAgIHZhbCBkb25lTWVzc2Fn
-ZSA9ICLEkMOjIHThuqNpIHhvbmc6ICR7cmVzdWx0LmRpc3BsYXlOYW1lfSDi
-gKIgJHtyZXN1bHQubG9jYXRpb259IgogICAgICAgICAgICAgICAgVm92UHVi
-bGljRG93bmxvYWRTdGF0ZS5jb21wbGV0ZWQoYXBwbGljYXRpb25Db250ZXh0
-LCB0aXRsZSwgZG9uZU1lc3NhZ2UpCiAgICAgICAgICAgICAgICB1cGRhdGVO
-b3RpZmljYXRpb24oZG9uZU1lc3NhZ2UsIG9uZ29pbmcgPSBmYWxzZSwgY29t
-cGxldGVkID0gdHJ1ZSkKICAgICAgICAgICAgICAgIG5vdGlmaWNhdGlvbk1h
-bmFnZXIuY2FuY2VsKE5PVElGSUNBVElPTl9JRCkKICAgICAgICAgICAgfSBj
-YXRjaCAoY2FuY2VsbGVkOiBDYW5jZWxsYXRpb25FeGNlcHRpb24pIHsKICAg
-ICAgICAgICAgICAgIHRocm93IGNhbmNlbGxlZAogICAgICAgICAgICB9IGNh
-dGNoIChlcnJvcjogRXhjZXB0aW9uKSB7CiAgICAgICAgICAgICAgICB2YWwg
-ZmFpbHVyZSA9ICJU4bqjaSBWT1YgdGjhuqV0IGLhuqFpOiAke2Vycm9yLm1l
-c3NhZ2UgPzogIkzhu5dpIGtow7RuZyB4w6FjIMSR4buLbmgifSIKICAgICAg
-ICAgICAgICAgIFZvdlB1YmxpY0Rvd25sb2FkU3RhdGUuZmFpbGVkKGFwcGxp
-Y2F0aW9uQ29udGV4dCwgdGl0bGUsIGZhaWx1cmUpCiAgICAgICAgICAgICAg
-ICB1cGRhdGVOb3RpZmljYXRpb24oZmFpbHVyZSwgb25nb2luZyA9IGZhbHNl
-LCBmYWlsZWQgPSB0cnVlKQogICAgICAgICAgICAgICAgbm90aWZpY2F0aW9u
-TWFuYWdlci5jYW5jZWwoTk9USUZJQ0FUSU9OX0lEKQogICAgICAgICAgICB9
-IGZpbmFsbHkgewogICAgICAgICAgICAgICAgLy8gU2VydmljZSBsaWZlY3lj
-bGUgb3BlcmF0aW9ucyBhcmUgZGlzcGF0Y2hlZCBvbiBBbmRyb2lkJ3MgbWFp
-biB0aHJlYWQuCiAgICAgICAgICAgICAgICBtYWluSGFuZGxlci5wb3N0IHsK
-ICAgICAgICAgICAgICAgICAgICBzdG9wRm9yZWdyb3VuZChTVE9QX0ZPUkVH
-Uk9VTkRfUkVNT1ZFKQogICAgICAgICAgICAgICAgICAgIHN0b3BTZWxmKHN0
-YXJ0SWQpCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAg
-ICB9CiAgICAgICAgcmV0dXJuIFNUQVJUX05PVF9TVElDS1kKICAgIH0KCiAg
-ICBwcml2YXRlIGZ1biBzdGFydEFzRm9yZWdyb3VuZChtZXNzYWdlOiBTdHJp
-bmcpIHsKICAgICAgICB2YWwgbm90aWZpY2F0aW9uID0gYnVpbGROb3RpZmlj
-YXRpb24obWVzc2FnZSwgb25nb2luZyA9IHRydWUpCiAgICAgICAgLy8gVGhl
-IHNlcnZpY2UgdHlwZSBpcyBkZWNsYXJlZCBpbiBBbmRyb2lkTWFuaWZlc3Qu
-eG1sLiBVc2luZyB0aGUKICAgICAgICAvLyB0d28tYXJndW1lbnQgb3Zlcmxv
-YWQgbGV0cyBBbmRyb2lkIGFwcGx5IHRoYXQgbWFuaWZlc3QgdHlwZSBhbmQg
-YXZvaWRzCiAgICAgICAgLy8gYSBydW50aW1lIHR5cGUgbWlzbWF0Y2ggd2hp
-bGUgc3RpbGwgY3JlYXRpbmcgYSBmb3JlZ3JvdW5kIHNlcnZpY2UuCiAgICAg
-ICAgc3RhcnRGb3JlZ3JvdW5kKE5PVElGSUNBVElPTl9JRCwgbm90aWZpY2F0
-aW9uKQogICAgfQoKICAgIHByaXZhdGUgZnVuIHVwZGF0ZU5vdGlmaWNhdGlv
-bigKICAgICAgICBtZXNzYWdlOiBTdHJpbmcsCiAgICAgICAgb25nb2luZzog
-Qm9vbGVhbiwKICAgICAgICBjb21wbGV0ZWQ6IEJvb2xlYW4gPSBmYWxzZSwK
-ICAgICAgICBmYWlsZWQ6IEJvb2xlYW4gPSBmYWxzZSwKICAgICAgICBwYXVz
-ZWQ6IEJvb2xlYW4gPSBmYWxzZQogICAgKSB7CiAgICAgICAgdmFsIG5vdGlm
-aWNhdGlvbiA9IGJ1aWxkTm90aWZpY2F0aW9uKG1lc3NhZ2UsIG9uZ29pbmcs
-IGNvbXBsZXRlZCwgZmFpbGVkLCBwYXVzZWQpCiAgICAgICAgbm90aWZpY2F0
-aW9uTWFuYWdlci5ub3RpZnkoTk9USUZJQ0FUSU9OX0lELCBub3RpZmljYXRp
-b24pCiAgICB9CgogICAgcHJpdmF0ZSBmdW4gYnVpbGROb3RpZmljYXRpb24o
-CiAgICAgICAgbWVzc2FnZTogU3RyaW5nLAogICAgICAgIG9uZ29pbmc6IEJv
-b2xlYW4sCiAgICAgICAgY29tcGxldGVkOiBCb29sZWFuID0gZmFsc2UsCiAg
-ICAgICAgZmFpbGVkOiBCb29sZWFuID0gZmFsc2UsCiAgICAgICAgcGF1c2Vk
-OiBCb29sZWFuID0gZmFsc2UKICAgICk6IE5vdGlmaWNhdGlvbiB7CiAgICAg
-ICAgdmFsIG9wZW5BcHAgPSBJbnRlbnQodGhpcywgTWFpbkFjdGl2aXR5Ojpj
-bGFzcy5qYXZhKQogICAgICAgIHZhbCBwZW5kaW5nSW50ZW50ID0gUGVuZGlu
-Z0ludGVudC5nZXRBY3Rpdml0eSgKICAgICAgICAgICAgdGhpcywKICAgICAg
-ICAgICAgMCwKICAgICAgICAgICAgb3BlbkFwcCwKICAgICAgICAgICAgUGVu
-ZGluZ0ludGVudC5GTEFHX1VQREFURV9DVVJSRU5UIG9yIFBlbmRpbmdJbnRl
-bnQuRkxBR19JTU1VVEFCTEUKICAgICAgICApCiAgICAgICAgdmFsIHRpdGxl
-ID0gd2hlbiB7CiAgICAgICAgICAgIGNvbXBsZXRlZCAtPiAiVk9WIOKAoiBU
-4bqjaSBob8OgbiB04bqldCIKICAgICAgICAgICAgZmFpbGVkIC0+ICJWT1Yg
-4oCiIFThuqNpIHRo4bqldCBi4bqhaSIKICAgICAgICAgICAgZWxzZSAtPiAi
-Vk9WIOKAoiDEkGFuZyB04bqjaSBu4buZaSBkdW5nIgogICAgICAgIH0KICAg
-ICAgICB2YWwgcGF1c2VJbnRlbnQgPSBQZW5kaW5nSW50ZW50LmdldFNlcnZp
-Y2UodGhpcywgMSwgSW50ZW50KHRoaXMsIFZvdlB1YmxpY0Rvd25sb2FkU2Vy
-dmljZTo6Y2xhc3MuamF2YSkuc2V0QWN0aW9uKEFDVElPTl9QQVVTRSksIFBl
-bmRpbmdJbnRlbnQuRkxBR19VUERBVEVfQ1VSUkVOVCBvciBQZW5kaW5nSW50
-ZW50LkZMQUdfSU1NVVRBQkxFKQogICAgICAgIHZhbCByZXN1bWVJbnRlbnQg
-PSBQZW5kaW5nSW50ZW50LmdldFNlcnZpY2UodGhpcywgMiwgSW50ZW50KHRo
-aXMsIFZvdlB1YmxpY0Rvd25sb2FkU2VydmljZTo6Y2xhc3MuamF2YSkuc2V0
-QWN0aW9uKEFDVElPTl9SRVNVTUUpLCBQZW5kaW5nSW50ZW50LkZMQUdfVVBE
-QVRFX0NVUlJFTlQgb3IgUGVuZGluZ0ludGVudC5GTEFHX0lNTVVUQUJMRSkK
-ICAgICAgICByZXR1cm4gTm90aWZpY2F0aW9uQ29tcGF0LkJ1aWxkZXIodGhp
-cywgQ0hBTk5FTF9JRCkKICAgICAgICAgICAgLnNldFNtYWxsSWNvbihSLmRy
-YXdhYmxlLmljX3N0YXRfcmFkaW8pCiAgICAgICAgICAgIC5zZXRDb250ZW50
-VGl0bGUodGl0bGUpCiAgICAgICAgICAgIC5zZXRDb250ZW50VGV4dChtZXNz
-YWdlLnRha2UoMTgwKSkKICAgICAgICAgICAgLnNldFN0eWxlKE5vdGlmaWNh
-dGlvbkNvbXBhdC5CaWdUZXh0U3R5bGUoKS5iaWdUZXh0KG1lc3NhZ2UpKQog
-ICAgICAgICAgICAuc2V0Q29udGVudEludGVudChwZW5kaW5nSW50ZW50KQog
-ICAgICAgICAgICAuc2V0T25nb2luZyhmYWxzZSkKICAgICAgICAgICAgLnNl
-dE9ubHlBbGVydE9uY2UodHJ1ZSkKICAgICAgICAgICAgLmFwcGx5IHsKICAg
-ICAgICAgICAgICAgIGlmIChvbmdvaW5nICYmICFwYXVzZWQpIGFkZEFjdGlv
-bihhbmRyb2lkLlIuZHJhd2FibGUuaWNfbWVkaWFfcGF1c2UsICJU4bqhbSBk
-4burbmciLCBwYXVzZUludGVudCkKICAgICAgICAgICAgICAgIGlmIChwYXVz
-ZWQpIGFkZEFjdGlvbihhbmRyb2lkLlIuZHJhd2FibGUuaWNfbWVkaWFfcGxh
-eSwgIlRp4bq/cCB04bulYyIsIHJlc3VtZUludGVudCkKICAgICAgICAgICAg
-fQogICAgICAgICAgICAuc2V0QXV0b0NhbmNlbCghb25nb2luZykKICAgICAg
-ICAgICAgLnNldFByb2dyZXNzKDAsIDAsIG9uZ29pbmcpCiAgICAgICAgICAg
-IC5zZXRDYXRlZ29yeShOb3RpZmljYXRpb25Db21wYXQuQ0FURUdPUllfUFJP
-R1JFU1MpCiAgICAgICAgICAgIC5zZXRQcmlvcml0eShOb3RpZmljYXRpb25D
-b21wYXQuUFJJT1JJVFlfTE9XKQogICAgICAgICAgICAuYnVpbGQoKQogICAg
-fQoKICAgIHByaXZhdGUgZnVuIGNyZWF0ZU5vdGlmaWNhdGlvbkNoYW5uZWwo
-KSB7CiAgICAgICAgaWYgKEJ1aWxkLlZFUlNJT04uU0RLX0lOVCA+PSBCdWls
-ZC5WRVJTSU9OX0NPREVTLk8pIHsKICAgICAgICAgICAgdmFsIGNoYW5uZWwg
-PSBOb3RpZmljYXRpb25DaGFubmVsKAogICAgICAgICAgICAgICAgQ0hBTk5F
-TF9JRCwKICAgICAgICAgICAgICAgICJU4bqjaSBu4buZaSBkdW5nIFZPViIs
-CiAgICAgICAgICAgICAgICBOb3RpZmljYXRpb25NYW5hZ2VyLklNUE9SVEFO
-Q0VfTE9XCiAgICAgICAgICAgICkuYXBwbHkgewogICAgICAgICAgICAgICAg
-ZGVzY3JpcHRpb24gPSAiSGnhu4NuIHRo4buLIHRp4bq/biDEkeG7mSB04bqj
-aSBu4buZaSBkdW5nIGPDtG5nIGtoYWkgdOG7qyBWT1YiCiAgICAgICAgICAg
-ICAgICBzZXRTaG93QmFkZ2UoZmFsc2UpCiAgICAgICAgICAgIH0KICAgICAg
-ICAgICAgbm90aWZpY2F0aW9uTWFuYWdlci5jcmVhdGVOb3RpZmljYXRpb25D
-aGFubmVsKGNoYW5uZWwpCiAgICAgICAgfQogICAgfQoKICAgIG92ZXJyaWRl
-IGZ1biBvbkJpbmQoaW50ZW50OiBJbnRlbnQ/KTogSUJpbmRlcj8gPSBudWxs
-CgogICAgb3ZlcnJpZGUgZnVuIG9uRGVzdHJveSgpIHsKICAgICAgICBzZXJ2
-aWNlU2NvcGUuY2FuY2VsKCkKICAgICAgICBzdXBlci5vbkRlc3Ryb3koKQog
-ICAgfQoKICAgIGNvbXBhbmlvbiBvYmplY3QgewogICAgICAgIGNvbnN0IHZh
-bCBBQ1RJT05fU1RBUlQgPSAidm4udm92Z3QucGx1cy5hY3Rpb24uU1RBUlRf
-UFVCTElDX1ZPVl9ET1dOTE9BRCIKICAgICAgICBjb25zdCB2YWwgQUNUSU9O
-X1BBVVNFID0gInZuLnZvdmd0LnBsdXMuYWN0aW9uLlBBVVNFX1BVQkxJQ19W
-T1ZfRE9XTkxPQUQiCiAgICAgICAgY29uc3QgdmFsIEFDVElPTl9SRVNVTUUg
-PSAidm4udm92Z3QucGx1cy5hY3Rpb24uUkVTVU1FX1BVQkxJQ19WT1ZfRE9X
-TkxPQUQiCiAgICAgICAgY29uc3QgdmFsIEVYVFJBX1VSTCA9ICJwdWJsaWNf
-dm92X3VybCIKICAgICAgICBjb25zdCB2YWwgRVhUUkFfVElUTEUgPSAicHVi
-bGljX3Zvdl90aXRsZSIKICAgICAgICBjb25zdCB2YWwgRVhUUkFfUEFHRSA9
-ICJwdWJsaWNfdm92X3BhZ2UiCiAgICAgICAgcHJpdmF0ZSBjb25zdCB2YWwg
-Q0hBTk5FTF9JRCA9ICJ2b3ZfcHVibGljX2Rvd25sb2FkcyIKICAgICAgICBw
-cml2YXRlIGNvbnN0IHZhbCBOT1RJRklDQVRJT05fSUQgPSA3NDEyCiAgICAg
-ICAgcHJpdmF0ZSBjb25zdCB2YWwgVEFHID0gIlZvdlB1YmxpY0Rvd25sb2Fk
-IgogICAgfQp9Cg==
+package vn.vovgt.plus
+
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
+import android.os.IBinder
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import androidx.core.app.NotificationCompat
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+
+/**
+ * Foreground download service used only by the public VOV archive tab.
+ * It is independent from VOV Media downloads and authentication.
+ */
+class VovPublicDownloadService : Service() {
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private var downloadJob: kotlinx.coroutines.Job? = null
+    private val notificationManager by lazy {
+        getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        createNotificationChannel()
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.action) {
+            ACTION_PAUSE -> {
+                VovPublicDownloadControl.pause()
+                val title = VovPublicDownloadState.read(applicationContext).title
+                VovPublicDownloadState.paused(applicationContext, title)
+                updateNotification("Đã tạm dừng: $title", ongoing = true, paused = true)
+                return START_NOT_STICKY
+            }
+            ACTION_RESUME -> {
+                VovPublicDownloadControl.resume()
+                val title = VovPublicDownloadState.read(applicationContext).title
+                VovPublicDownloadState.resumed(applicationContext, title)
+                updateNotification("Đang tiếp tục: $title", ongoing = true)
+                return START_NOT_STICKY
+            }
+        }
+        if (intent?.action != ACTION_START) {
+            stopSelf(startId)
+            return START_NOT_STICKY
+        }
+
+        if (downloadJob?.isActive == true) {
+            updateNotification("Đang có một lượt tải VOV khác chạy.", ongoing = true)
+            return START_NOT_STICKY
+        }
+
+        val mediaUrl = intent.getStringExtra(EXTRA_URL).orEmpty()
+        val title = intent.getStringExtra(EXTRA_TITLE).orEmpty().ifBlank { "Chương trình VOV" }
+        val pageUrl = intent.getStringExtra(EXTRA_PAGE).orEmpty().ifBlank {
+            "https://vov.gov.vn/nghe-va-xem-lai"
+        }
+        if (mediaUrl.isBlank()) {
+            stopSelf(startId)
+            return START_NOT_STICKY
+        }
+
+        try {
+            startAsForeground("Đang chuẩn bị tải: $title")
+        } catch (error: Exception) {
+            // A foreground-service startup exception must not crash the whole app process.
+            Log.e(TAG, "Cannot promote VOV download service to foreground", error)
+            stopSelf(startId)
+            return START_NOT_STICKY
+        }
+
+        VovPublicDownloadControl.resume()
+        VovPublicDownloadState.started(applicationContext, title)
+        downloadJob = serviceScope.launch {
+            try {
+                val result = VovPublicMediaDownloader.download(
+                    context = applicationContext,
+                    mediaUrl = mediaUrl,
+                    title = title,
+                    pageUrl = pageUrl,
+                    onProgress = { message ->
+                        VovPublicDownloadState.progress(applicationContext, title, message)
+                        updateNotification(message, ongoing = true)
+                    }
+                )
+                val doneMessage = "Đã tải xong: ${result.displayName} • ${result.location}"
+                VovPublicDownloadState.completed(applicationContext, title, doneMessage)
+                updateNotification(doneMessage, ongoing = false, completed = true)
+                notificationManager.cancel(NOTIFICATION_ID)
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (error: Exception) {
+                val failure = "Tải VOV thất bại: ${error.message ?: "Lỗi không xác định"}"
+                VovPublicDownloadState.failed(applicationContext, title, failure)
+                updateNotification(failure, ongoing = false, failed = true)
+                notificationManager.cancel(NOTIFICATION_ID)
+            } finally {
+                // Service lifecycle operations are dispatched on Android's main thread.
+                mainHandler.post {
+                    stopForeground(STOP_FOREGROUND_REMOVE)
+                    stopSelf(startId)
+                }
+            }
+        }
+        return START_NOT_STICKY
+    }
+
+    private fun startAsForeground(message: String) {
+        val notification = buildNotification(message, ongoing = true)
+        // The service type is declared in AndroidManifest.xml. Using the
+        // two-argument overload lets Android apply that manifest type and avoids
+        // a runtime type mismatch while still creating a foreground service.
+        startForeground(NOTIFICATION_ID, notification)
+    }
+
+    private fun updateNotification(
+        message: String,
+        ongoing: Boolean,
+        completed: Boolean = false,
+        failed: Boolean = false,
+        paused: Boolean = false
+    ) {
+        val notification = buildNotification(message, ongoing, completed, failed, paused)
+        notificationManager.notify(NOTIFICATION_ID, notification)
+    }
+
+    private fun buildNotification(
+        message: String,
+        ongoing: Boolean,
+        completed: Boolean = false,
+        failed: Boolean = false,
+        paused: Boolean = false
+    ): Notification {
+        val openApp = Intent(this, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            openApp,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val title = when {
+            completed -> "VOV • Tải hoàn tất"
+            failed -> "VOV • Tải thất bại"
+            else -> "VOV • Đang tải nội dung"
+        }
+        val pauseIntent = PendingIntent.getService(this, 1, Intent(this, VovPublicDownloadService::class.java).setAction(ACTION_PAUSE), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val resumeIntent = PendingIntent.getService(this, 2, Intent(this, VovPublicDownloadService::class.java).setAction(ACTION_RESUME), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        return NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_stat_radio)
+            .setContentTitle(title)
+            .setContentText(message.take(180))
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+            .setContentIntent(pendingIntent)
+            .setOngoing(false)
+            .setOnlyAlertOnce(true)
+            .apply {
+                if (ongoing && !paused) addAction(android.R.drawable.ic_media_pause, "Tạm dừng", pauseIntent)
+                if (paused) addAction(android.R.drawable.ic_media_play, "Tiếp tục", resumeIntent)
+            }
+            .setAutoCancel(!ongoing)
+            .setProgress(0, 0, ongoing)
+            .setCategory(NotificationCompat.CATEGORY_PROGRESS)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                "Tải nội dung VOV",
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                description = "Hiển thị tiến độ tải nội dung công khai từ VOV"
+                setShowBadge(false)
+            }
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    override fun onBind(intent: Intent?): IBinder? = null
+
+    override fun onDestroy() {
+        serviceScope.cancel()
+        super.onDestroy()
+    }
+
+    companion object {
+        const val ACTION_START = "vn.vovgt.plus.action.START_PUBLIC_VOV_DOWNLOAD"
+        const val ACTION_PAUSE = "vn.vovgt.plus.action.PAUSE_PUBLIC_VOV_DOWNLOAD"
+        const val ACTION_RESUME = "vn.vovgt.plus.action.RESUME_PUBLIC_VOV_DOWNLOAD"
+        const val EXTRA_URL = "public_vov_url"
+        const val EXTRA_TITLE = "public_vov_title"
+        const val EXTRA_PAGE = "public_vov_page"
+        private const val CHANNEL_ID = "vov_public_downloads"
+        private const val NOTIFICATION_ID = 7412
+        private const val TAG = "VovPublicDownload"
+    }
+}
