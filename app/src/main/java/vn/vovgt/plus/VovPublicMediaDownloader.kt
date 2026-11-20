@@ -101,6 +101,7 @@ internal object VovPublicMediaDownloader {
             val saved = writeToDownloads(context, name, "video/mp4") { output ->
                 val input = body.byteStream()
                 val buffer = ByteArray(64 * 1024)
+                val expected = body.contentLength()
                 var total = 0L
                 while (true) {
                     VovPublicDownloadControl.awaitIfPaused()
@@ -109,7 +110,10 @@ internal object VovPublicMediaDownloader {
                     if (count < 0) break
                     output.write(buffer, 0, count)
                     total += count
-                    onProgress("Đang tải MP4: ${formatBytes(total)}")
+                    onProgress(
+                        if (expected > 0L) "Đang tải MP4: $total / $expected bytes · ${formatBytes(total)} / ${formatBytes(expected)}"
+                        else "Đang tải MP4: ${formatBytes(total)}"
+                    )
                 }
                 if (total < 1024) error("File nhận được quá nhỏ, có thể không phải video hợp lệ.")
             }
