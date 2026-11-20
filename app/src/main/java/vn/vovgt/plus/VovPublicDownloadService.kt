@@ -60,7 +60,7 @@ class VovPublicDownloadService : Service() {
                     DownloadCenterStore.update(applicationContext, pausedTask.id, status = "running", detail = "Đang tiếp tục tải…")
                     VovPublicDownloadState.resumed(applicationContext, pausedTask.title)
                     DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", pausedTask.title, "resumed", "Tiếp tục tải")
-                    if (downloadJob?.isActive != true) {
+                    if (downloadJob?.isCompleted != false) {
                         currentTaskId = pausedTask.id
                         try {
                             startAsForeground("Đang tiếp tục: ${pausedTask.title}")
@@ -74,7 +74,7 @@ class VovPublicDownloadService : Service() {
                     } else {
                         updateNotification("Đang tiếp tục tải: ${pausedTask.title}", ongoing = true)
                     }
-                } else if (downloadJob?.isActive != true) {
+                } else if (downloadJob?.isCompleted != false) {
                     startNext(startId)
                 }
                 return START_NOT_STICKY
@@ -87,7 +87,7 @@ class VovPublicDownloadService : Service() {
             ACTION_RETRY -> {
                 val id = intent.getStringExtra(EXTRA_TASK_ID).orEmpty()
                 if (id.isNotBlank()) DownloadCenterStore.retry(applicationContext, id)
-                if (downloadJob?.isActive != true) startNext(startId)
+                if (downloadJob?.isCompleted != false) startNext(startId)
                 return START_NOT_STICKY
             }
             ACTION_REMOVE -> {
@@ -101,13 +101,13 @@ class VovPublicDownloadService : Service() {
                 val pageUrl = intent.getStringExtra(EXTRA_PAGE).orEmpty().ifBlank { "https://vov.gov.vn/nghe-va-xem-lai" }
                 if (mediaUrl.isNotBlank()) {
                     val task = DownloadCenterStore.enqueue(applicationContext, mediaUrl, title, pageUrl)
-                    if (downloadJob?.isActive != true) startNext(startId)
+                    if (downloadJob?.isCompleted != false) startNext(startId)
                     else updateNotification("Đã xếp hàng: ${task.title}", ongoing = true)
                 }
                 return START_NOT_STICKY
             }
             ACTION_PROCESS_QUEUE -> {
-                if (downloadJob?.isActive != true) startNext(startId)
+                if (downloadJob?.isCompleted != false) startNext(startId)
                 return START_NOT_STICKY
             }
         }
@@ -116,7 +116,7 @@ class VovPublicDownloadService : Service() {
     }
 
     private fun startNext(startId: Int) {
-        if (downloadJob?.isActive == true) return
+        if (downloadJob?.isCompleted == false) return
         val task = DownloadCenterStore.nextQueued(applicationContext)
         if (task == null) {
             mainHandler.post {
