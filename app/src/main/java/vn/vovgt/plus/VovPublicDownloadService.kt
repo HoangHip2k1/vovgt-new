@@ -55,13 +55,28 @@ class VovPublicDownloadService : Service() {
             }
             ACTION_RESUME -> {
                 VovPublicDownloadControl.resume()
-                DownloadCenterStore.current(applicationContext)?.let { task ->
-                    DownloadCenterStore.update(applicationContext, task.id, status = "running", detail = "Đang tiếp tục tải…")
-                    VovPublicDownloadState.resumed(applicationContext, task.title)
-                    DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "resumed", "Tiếp tục tải")
+                val pausedTask = DownloadCenterStore.current(applicationContext)
+                if (pausedTask != null) {
+                    DownloadCenterStore.update(applicationContext, pausedTask.id, status = "running", detail = "Đang tiếp tục tải…")
+                    VovPublicDownloadState.resumed(applicationContext, pausedTask.title)
+                    DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", pausedTask.title, "resumed", "Tiếp tục tải")
+                    if (downloadJob?.isActive != true) {
+                        currentTaskId = pausedTask.id
+                        try {
+                            startAsForeground("Đang tiếp tục: ${pausedTask.title}")
+                            runTask(pausedTask.copy(status = "running"), startId)
+                        } catch (error: Exception) {
+                            val detail = "Không thể tiếp tục tải: ${error.message}"
+                            DownloadCenterStore.update(applicationContext, pausedTask.id, status = "failed", detail = detail)
+                            DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", pausedTask.title, "failed", detail)
+                            startNext(startId)
+                        }
+                    } else {
+                        updateNotification("Đang tiếp tục tải: ${pausedTask.title}", ongoing = true)
+                    }
+                } else if (downloadJob?.isActive != true) {
+                    startNext(startId)
                 }
-                if (downloadJob?.isActive != true) startNext(startId)
-                else updateNotification("Đang tiếp tục tải…", ongoing = true)
                 return START_NOT_STICKY
             }
             ACTION_CANCEL -> {
@@ -129,6 +144,7 @@ class VovPublicDownloadService : Service() {
         currentTaskId = task.id
         VovPublicDownloadControl.resume()
         VovPublicDownloadState.started(applicationContext, task.title)
+        DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "started", "Bắt đầu tải nội dung")
         downloadJob = serviceScope.launch {
             try {
                 val result = VovPublicMediaDownloader.download(
