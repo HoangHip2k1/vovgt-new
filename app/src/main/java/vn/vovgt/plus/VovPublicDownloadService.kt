@@ -30,6 +30,7 @@ class VovPublicDownloadService : Service() {
     private var downloadJob: kotlinx.coroutines.Job? = null
     private var currentTaskId: String? = null
     private var lastStartId: Int = 0
+    @Volatile private var shuttingDown: Boolean = false
     private val notificationManager by lazy {
         getSystemService(NOTIFICATION_SERVICE) as NotificationManager
     }
@@ -175,7 +176,7 @@ class VovPublicDownloadService : Service() {
             } finally {
                 mainHandler.post {
                     // A newly enqueued task may already have started while this cancelled job was unwinding.
-                    if (currentTaskId == task.id) {
+                    if (!shuttingDown && currentTaskId == task.id) {
                         downloadJob = null
                         currentTaskId = null
                         val next = DownloadCenterStore.nextQueued(applicationContext)
@@ -289,6 +290,17 @@ class VovPublicDownloadService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onDestroy() {
+        shuttingDown = true
+        DownloadCenterStore.current(applicationContext)?.let { task ->
+            if (task.status == "running") {
+                DownloadCenterStore.update(
+                    applicationContext,
+                    task.id,
+                    status = "queued",
+                    detail = "Tác vụ bị gián đoạn; sẽ tiếp tục khi mở lại mục Tải xuống"
+                )
+            }
+        }
         VovPublicDownloadControl.resume()
         VovPublicMediaDownloader.cancelCurrent()
         serviceScope.cancel()
