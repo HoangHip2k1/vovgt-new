@@ -115,73 +115,14 @@ class VovPublicDownloadService : Service() {
             startAsForeground("Đang chuẩn bị tải: ${task.title}")
         } catch (error: Exception) {
             Log.e(TAG, "Cannot promote VOV download service to foreground", error)
-            DownloadCenterStore.update(applicationContext, task.id, status = "failed", detail = "Không thể khởi chạy dịch vụ tải: ${error.message}")
-            DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "failed", error.message ?: "Không thể khởi chạy dịch vụ tải")
+            val detail = "Không thể khởi chạy dịch vụ tải: ${error.message}"
+            DownloadCenterStore.update(applicationContext, task.id, status = "failed", detail = detail)
+            DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "failed", detail)
             currentTaskId = null
             startNext(startId)
             return
         }
-
-        VovPublicDownloadControl.resume()
-        VovPublicDownloadState.started(applicationContext, task.title)
-        downloadJob = serviceScope.launch {
-            try {
-                val result = VovPublicMediaDownloader.download(
-                    context = applicationContext,
-                    mediaUrl = task.url,
-                    title = task.title,
-                    pageUrl = task.pageUrl,
-                    onProgress = { message ->
-                        DownloadCenterStore.update(
-                            applicationContext,
-                            task.id,
-                            detail = message,
-                            progress = progressFrom(message)
-                        )
-                        VovPublicDownloadState.progress(applicationContext, task.title, message)
-                        updateNotification(message, ongoing = true)
-                    }
-                )
-                val doneMessage = "Đã tải xong: ${result.displayName} • ${result.location}"
-                DownloadCenterStore.update(
-                    applicationContext,
-                    task.id,
-                    status = "completed",
-                    detail = doneMessage,
-                    progress = 1f,
-                    location = result.location,
-                    mediaUri = result.mediaUri
-                )
-                DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "completed", doneMessage)
-                VovPublicDownloadState.completed(applicationContext, task.title, doneMessage)
-                updateNotification(doneMessage, ongoing = false, completed = true)
-            } catch (cancelled: CancellationException) {
-                val latest = DownloadCenterStore.tasks(applicationContext).firstOrNull { it.id == task.id }
-                if (latest?.status == "running" || latest?.status == "paused") {
-                    DownloadCenterStore.update(applicationContext, task.id, status = "queued", detail = "Tác vụ bị gián đoạn; sẽ thử lại khi dịch vụ hoạt động")
-                }
-                throw cancelled
-            } catch (error: Exception) {
-                val failure = "Tải VOV thất bại: ${error.message ?: "Lỗi không xác định"}"
-                DownloadCenterStore.update(applicationContext, task.id, status = "failed", detail = failure, progress = -1f)
-                DownloadCenterStore.record(applicationContext, "VOV Nghe & xem lại", task.title, "failed", failure)
-                VovPublicDownloadState.failed(applicationContext, task.title, failure)
-                updateNotification(failure, ongoing = false, failed = true)
-            } finally {
-                mainHandler.post {
-                    downloadJob = null
-                    currentTaskId = null
-                    val next = DownloadCenterStore.nextQueued(applicationContext)
-                    if (next != null) {
-                        // The next task is already marked running; start it without a second queue lookup.
-                        runTask(next, lastStartId)
-                    } else {
-                        stopForeground(STOP_FOREGROUND_REMOVE)
-                        stopSelf(lastStartId)
-                    }
-                }
-            }
-        }
+        runTask(task, startId)
     }
 
     private fun runTask(task: DownloadCenterStore.PublicTask, startId: Int) {
