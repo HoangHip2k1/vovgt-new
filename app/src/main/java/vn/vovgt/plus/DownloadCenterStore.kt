@@ -163,7 +163,16 @@ internal object DownloadCenterStore {
 
     @Synchronized
     fun removeTask(context: Context, id: String) {
+        val task = tasks(context).firstOrNull { it.id == id } ?: return
+        if (task.mediaUri.isNotBlank()) {
+            try {
+                val uri = Uri.parse(task.mediaUri)
+                if (uri.scheme == "content") context.contentResolver.delete(uri, null, null)
+                else if (uri.scheme == "file") uri.path?.let { File(it).delete() }
+            } catch (_: Exception) { }
+        }
         writeTasks(context, tasks(context).filterNot { it.id == id })
+        record(context, "VOV Nghe & xem lại", task.title, "removed", "Đã xóa bản tải và mục khỏi danh sách")
     }
 
     @Synchronized
@@ -270,7 +279,7 @@ internal object DownloadCenterStore {
             publicFileCount = count,
             publicBytes = publicBytes,
             cacheBytes = cacheBytes,
-            freeBytes = context.filesDir.usableSpace
+            freeBytes = (context.getExternalFilesDir(null) ?: context.filesDir).usableSpace
         )
     }
 
