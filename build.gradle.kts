@@ -1,5 +1,5 @@
-cGx1Z2lucyB7CiAgICBpZCgiY29tLmFuZHJvaWQuYXBwbGljYXRpb24iKSB2
-ZXJzaW9uICI4LjExLjEiIGFwcGx5IGZhbHNlCiAgICBpZCgib3JnLmpldGJy
-YWlucy5rb3RsaW4uYW5kcm9pZCIpIHZlcnNpb24gIjIuMi4yMSIgYXBwbHkg
-ZmFsc2UKICAgIGlkKCJvcmcuamV0YnJhaW5zLmtvdGxpbi5wbHVnaW4uY29t
-cG9zZSIpIHZlcnNpb24gIjIuMi4yMSIgYXBwbHkgZmFsc2UKfQo=
+plugins {
+    id("com.android.application") version "8.11.1" apply false
+    id("org.jetbrains.kotlin.android") version "2.2.21" apply false
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.21" apply false
+}
