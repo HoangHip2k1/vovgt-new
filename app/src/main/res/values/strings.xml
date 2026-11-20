@@ -1,6 +1,5 @@
-PHJlc291cmNlcz4KICAgIDxzdHJpbmcgbmFtZT0iYXBwX25hbWUiPlZPViBH
-aWFvIHRow7RuZys8L3N0cmluZz4KICAgIDxzdHJpbmcgbmFtZT0iZG93bmxv
-YWRfY2hhbm5lbCI+VOG6o2kgw6JtIHRoYW5oPC9zdHJpbmc+CiAgICA8c3Ry
-aW5nIG5hbWU9ImRvd25sb2FkX2NoYW5uZWxfZGVzY3JpcHRpb24iPlRp4bq/
-biDEkeG7mSB2w6AgdHLhuqFuZyB0aMOhaSB04bqjaSBwaMOhdCBs4bqhaTwv
-c3RyaW5nPgo8L3Jlc291cmNlcz4K
+<resources>
+    <string name="app_name">VOV Giao thông+</string>
+    <string name="download_channel">Tải âm thanh</string>
+    <string name="download_channel_description">Tiến độ và trạng thái tải phát lại</string>
+</resources>
