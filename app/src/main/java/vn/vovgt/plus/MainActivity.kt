@@ -672,7 +672,14 @@ private fun DownloadsScreen(onListen: (String, String) -> Unit, report: (String)
         val intent = Intent(context, VovPublicDownloadService::class.java).setAction(action)
         if (taskId != null) intent.putExtra(VovPublicDownloadService.EXTRA_TASK_ID, taskId)
         try {
-            androidx.core.content.ContextCompat.startForegroundService(context, intent)
+            if (action == VovPublicDownloadService.ACTION_PAUSE ||
+                action == VovPublicDownloadService.ACTION_CANCEL ||
+                action == VovPublicDownloadService.ACTION_REMOVE
+            ) {
+                context.startService(intent)
+            } else {
+                androidx.core.content.ContextCompat.startForegroundService(context, intent)
+            }
         } catch (error: Exception) {
             report(error.message ?: "Không thể điều khiển tác vụ tải")
         }
